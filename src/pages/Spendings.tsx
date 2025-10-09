@@ -1,16 +1,16 @@
-import Dashboard from "../components/main/Dashboard";
 import Footer from "../components/main/Footer";
 import Header from "../components/main/Header";
+import MyTransactions from "../components/main/MyTransactions";
 import SideBar from "../components/main/SideBar";
 
-const Home = () => {
+const Spendings = () => {
   return (
     <div className="flex h-screen bg-bg">
       <SideBar />
       <div className="flex flex-col flex-1 ml-48">
         <Header />
         <main className="flex-1 p-4">
-          <Dashboard />
+          <MyTransactions />
         </main>
         <Footer />
       </div>
@@ -18,4 +18,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Spendings;
