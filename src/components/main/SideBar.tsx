@@ -61,6 +61,13 @@ const SideBar = () => {
           <FiBarChart2 className="mr-3" />
           Charts
         </a>
+        <a
+          href="/test"
+          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
+        >
+          <FiHome className="mr-3" />
+          Test
+        </a>
         <div className="hs-accordion-group">
           <div className="hs-accordion" id="accordion-group">
             <button
