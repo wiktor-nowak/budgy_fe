@@ -1,3 +1,12 @@
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { FiCreditCard, FiDollarSign, FiCheck, FiX, FiChevronDown } from "react-icons/fi";
 
 const MyTransactions = () => {
@@ -65,44 +74,44 @@ const MyTransactions = () => {
       <h2 className="text-text-primary dark:text-dark-text-primary text-lg font-semibold">
         My Transactions
       </h2>
-      <table className="w-full mt-4 text-sm text-left text-text-secondary dark:text-dark-text-secondary">
-        <thead>
-          <tr className="border-b-2 border-gray-300">
-            <th className="p-2">Date</th>
-            <th className="p-2">Category</th>
-            <th className="p-2 text-right pr-4">Amount</th>
-            <th className="p-2 text-center">Method</th>
-            <th className="p-2 text-center">Splitted</th>
-            <th className="p-2">Details</th>
-            <th className="p-2"></th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="text-center">Method</TableHead>
+            <TableHead className="text-center">Splitted</TableHead>
+            <TableHead>Details</TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {transactions.map((transaction, index) => (
-            <tr key={index} className="border-b border-bg dark:border-dark-bg">
-              <td className="p-2"><span className="cursor-pointer" onClick={() => handleDateClick(transaction.date)}>{transaction.date.toLocaleDateString("en-GB")}</span></td>
-              <td className="p-2"><span className="cursor-pointer" onClick={() => handleCategoryClick(transaction.category)}>{transaction.category.substring(0, 30)}</span></td>
-              <td className={`p-2 text-right pr-4 ${transaction.amount > 0 ? "text-success" : "text-warning"}`}>
+            <TableRow key={index}>
+              <TableCell><span className="cursor-pointer" onClick={() => handleDateClick(transaction.date)}>{transaction.date.toLocaleDateString("en-GB")}</span></TableCell>
+              <TableCell><span className="cursor-pointer" onClick={() => handleCategoryClick(transaction.category)}>{transaction.category.substring(0, 30)}</span></TableCell>
+              <TableCell className={`text-right ${transaction.amount > 0 ? "text-success" : "text-warning"}`}>
                 {transaction.amount.toFixed(2)} PLN
-              </td>
-              <td className="p-2 text-center">
+              </TableCell>
+              <TableCell className="text-center">
                 <span className="cursor-pointer" onClick={() => handleIconClick(transaction.method)}>
                   {transaction.method === "card" ? <FiCreditCard className="mx-auto" /> : <FiDollarSign className="mx-auto" />}
                 </span>
-              </td>
-              <td className="p-2 text-center">
+              </TableCell>
+              <TableCell className="text-center">
                 <span className="cursor-pointer" onClick={() => handleIconClick(transaction.splitted ? "splitted" : "not splitted")}>
                   {transaction.splitted ? <FiCheck className="mx-auto" /> : <FiX className="mx-auto" />}
                 </span>
-              </td>
-              <td className="p-2">{transaction.description.substring(0, 50)}{transaction.description.length > 50 && "..."}</td>
-              <td className="p-2 text-right">
+              </TableCell>
+              <TableCell>{transaction.description.substring(0, 50)}{transaction.description.length > 50 && "..."}</TableCell>
+              <TableCell className="text-right">
                 <FiChevronDown className="cursor-pointer" onClick={() => handleRowClick(index)} />
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 };
