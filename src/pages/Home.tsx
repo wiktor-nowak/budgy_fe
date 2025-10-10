@@ -1,19 +1,13 @@
-import Dashboard from "../components/main/Dashboard";
-import Footer from "../components/main/Footer";
-import Header from "../components/main/Header";
-import SideBar from "../components/main/SideBar";
+import MyCard from "../components/main/MyCard";
+import MyFinances from "../components/main/MyFinances";
 
 const Home = () => {
   return (
-    <div className="flex h-screen bg-bg">
-      <SideBar />
-      <div className="flex flex-col flex-1 ml-48">
-        <Header />
-        <main className="flex-1 p-4">
-          <Dashboard />
-        </main>
-        <Footer />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 bg-bg">
+      <div className="lg:col-span-2">
+        <MyFinances />
       </div>
+      <MyCard />
     </div>
   );
 };
