@@ -11,6 +11,12 @@ import {
   FiTool,
   FiUser
 } from "react-icons/fi";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const SideBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -68,22 +74,13 @@ const SideBar = () => {
           <FiHome className="mr-3" />
           Test
         </a>
-        <div className="hs-accordion-group">
-          <div className="hs-accordion" id="accordion-group">
-            <button
-              className="hs-accordion-toggle flex items-center w-full text-left text-sm font-medium rounded-md px-2 py-2 hover:bg-forestgreen cursor-pointer"
-              aria-controls="accordion-group-body"
-            >
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
               <FiUsers className="mr-3" />
               Group
-              <svg className="hs-accordion-active:block hidden w-3 h-3 text-white group-hover:text-gray-500 ml-auto" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 11L8 5L14 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              <svg className="hs-accordion-active:hidden block w-3 h-3 text-white group-hover:text-gray-500 ml-auto" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 5L8 11L14 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-            <div id="accordion-group-body" className="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300">
+            </AccordionTrigger>
+            <AccordionContent>
               <a
                 href="/home"
                 className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen pl-8"
@@ -105,9 +102,9 @@ const SideBar = () => {
                 <FiTool className="mr-3" />
                 Manage group
               </a>
-            </div>
-          </div>
-        </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </nav>
       <div className="p-2 mt-auto">
         <a
