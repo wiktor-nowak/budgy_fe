@@ -7,15 +7,13 @@ import Charts from "./pages/Charts";
 import GroupManagement from "./pages/GroupManagement";
 import AddSpending from "./pages/AddSpending";
 import TestPage from "./pages/TestPage";
-// import Header from "./components/main/Header";
-// import SideBar from "./components/main/SideBar";
-// import Footer from "./components/main/Footer";
+import Layout from "./layout/Layout";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Outside />} />
-      <Route>
+      <Route element={<Layout />}>
         <Route path="/home" element={<Home />} />
         <Route path="/spendings" element={<MonthlySpendings />} />
         <Route path="/transactions" element={<Transactions />} />
@@ -29,5 +27,3 @@ function App() {
 }
 
 export default App;
-
-// element={<AppLayout />}
