@@ -1,13 +1,18 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FiCreditCard, FiDollarSign, FiCheck, FiX, FiChevronDown } from "react-icons/fi";
+import {
+  FiCreditCard,
+  FiDollarSign,
+  FiCheck,
+  FiX,
+  FiChevronDown,
+} from "react-icons/fi";
 
 const MyTransactions = () => {
   const transactions = [
@@ -17,7 +22,8 @@ const MyTransactions = () => {
       amount: -50.0,
       method: "card",
       splitted: true,
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     },
     {
       date: new Date("2024-05-02"),
@@ -25,7 +31,8 @@ const MyTransactions = () => {
       amount: 5000.0,
       method: "cash",
       splitted: false,
-      description: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      description:
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
     },
     {
       date: new Date("2024-05-03"),
@@ -33,7 +40,8 @@ const MyTransactions = () => {
       amount: -200.0,
       method: "card",
       splitted: true,
-      description: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      description:
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },
     {
       date: new Date("2024-05-04"),
@@ -41,7 +49,8 @@ const MyTransactions = () => {
       amount: -1000.0,
       method: "cash",
       splitted: false,
-      description: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+      description:
+        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
     },
     {
       date: new Date("2024-05-05"),
@@ -49,7 +58,8 @@ const MyTransactions = () => {
       amount: 1000.0,
       method: "card",
       splitted: false,
-      description: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+      description:
+        "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
     },
   ];
 
@@ -89,24 +99,66 @@ const MyTransactions = () => {
         <TableBody>
           {transactions.map((transaction, index) => (
             <TableRow key={index}>
-              <TableCell><span className="cursor-pointer" onClick={() => handleDateClick(transaction.date)}>{transaction.date.toLocaleDateString("en-GB")}</span></TableCell>
-              <TableCell><span className="cursor-pointer" onClick={() => handleCategoryClick(transaction.category)}>{transaction.category.substring(0, 30)}</span></TableCell>
-              <TableCell className={`text-right ${transaction.amount > 0 ? "text-success" : "text-warning"}`}>
+              <TableCell>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleDateClick(transaction.date)}
+                >
+                  {transaction.date.toLocaleDateString("en-GB")}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleCategoryClick(transaction.category)}
+                >
+                  {transaction.category.substring(0, 30)}
+                </span>
+              </TableCell>
+              <TableCell
+                className={`text-right ${
+                  transaction.amount > 0 ? "text-success" : "text-warning"
+                }`}
+              >
                 {transaction.amount.toFixed(2)} PLN
               </TableCell>
               <TableCell className="text-center">
-                <span className="cursor-pointer" onClick={() => handleIconClick(transaction.method)}>
-                  {transaction.method === "card" ? <FiCreditCard className="mx-auto" /> : <FiDollarSign className="mx-auto" />}
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleIconClick(transaction.method)}
+                >
+                  {transaction.method === "card" ? (
+                    <FiCreditCard className="mx-auto" />
+                  ) : (
+                    <FiDollarSign className="mx-auto" />
+                  )}
                 </span>
               </TableCell>
               <TableCell className="text-center">
-                <span className="cursor-pointer" onClick={() => handleIconClick(transaction.splitted ? "splitted" : "not splitted")}>
-                  {transaction.splitted ? <FiCheck className="mx-auto" /> : <FiX className="mx-auto" />}
+                <span
+                  className="cursor-pointer"
+                  onClick={() =>
+                    handleIconClick(
+                      transaction.splitted ? "splitted" : "not splitted"
+                    )
+                  }
+                >
+                  {transaction.splitted ? (
+                    <FiCheck className="mx-auto" />
+                  ) : (
+                    <FiX className="mx-auto" />
+                  )}
                 </span>
               </TableCell>
-              <TableCell>{transaction.description.substring(0, 50)}{transaction.description.length > 50 && "..."}</TableCell>
+              <TableCell>
+                {transaction.description.substring(0, 50)}
+                {transaction.description.length > 50 && "..."}
+              </TableCell>
               <TableCell className="text-right">
-                <FiChevronDown className="cursor-pointer" onClick={() => handleRowClick(index)} />
+                <FiChevronDown
+                  className="cursor-pointer"
+                  onClick={() => handleRowClick(index)}
+                />
               </TableCell>
             </TableRow>
           ))}
