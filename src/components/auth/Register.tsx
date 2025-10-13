@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -27,12 +29,43 @@ const schema = z
 type FormFields = z.infer<typeof schema>;
 
 const Register = ({ onSwitch }: { onSwitch: () => void }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>({
     resolver: zodResolver(schema),
   });
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const onSubmit = (data: FormFields) => {
-    console.log(data);
+  const onSubmit = async (data: FormFields) => {
+    try {
+      const response = await fetch("http://localhost:3003/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.username,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || "Registration failed");
+        return;
+      }
+
+      const responseData = await response.json();
+      localStorage.setItem("token", responseData.token);
+      navigate("/home");
+    } catch (error) {
+      setError("Registration failed");
+      console.error(error);
+    }
   };
 
   return (
@@ -45,6 +78,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          {error && <p className="text-red-500 text-xs">{error}</p>}
           <div className="grid gap-2">
             <Label htmlFor="username">Username</Label>
             <Input id="username" {...register("username")} />

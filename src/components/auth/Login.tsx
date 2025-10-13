@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z.string().email(),
@@ -20,12 +22,39 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>;
 
 const Login = ({ onSwitch }: { onSwitch: () => void }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>({
     resolver: zodResolver(schema),
   });
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const onSubmit = (data: FormFields) => {
-    console.log(data);
+  const onSubmit = async (data: FormFields) => {
+    try {
+      const response = await fetch("http://localhost:3003/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        setError(responseData.error || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("token", responseData.token);
+      navigate("/home");
+    } catch (error) {
+      setError("Login failed");
+      console.log(error);
+    }
   };
 
   return (
@@ -38,6 +67,7 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          {error && <p className="text-red-500 text-xs">{error}</p>}
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input

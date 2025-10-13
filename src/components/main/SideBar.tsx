@@ -9,7 +9,8 @@ import {
   FiMoon,
   FiUsers,
   FiTool,
-  FiUser
+  FiUser,
+  FiLogOut,
 } from "react-icons/fi";
 import {
   Accordion,
@@ -17,9 +18,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -31,6 +34,11 @@ const SideBar = () => {
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
@@ -124,6 +132,13 @@ const SideBar = () => {
             <FiMoon className="mr-3" />
           )}
           {isDarkMode ? "Light Mode" : "Dark Mode"}
+        </button>
+        <button
+          onClick={handleLogout}
+          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen cursor-pointer w-full"
+        >
+          <FiLogOut className="mr-3" />
+          Log Out
         </button>
       </div>
     </aside>
