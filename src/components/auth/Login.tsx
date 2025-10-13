@@ -58,7 +58,7 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>

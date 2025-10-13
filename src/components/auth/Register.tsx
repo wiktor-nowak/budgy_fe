@@ -69,7 +69,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="max-w-sm">
       <CardHeader>
         <CardTitle className="text-xl">Sign Up</CardTitle>
         <CardDescription>

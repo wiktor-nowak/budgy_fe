@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  FiHome,
   FiShoppingCart,
   FiBarChart2,
   FiCreditCard,
@@ -9,16 +8,32 @@ import {
   FiMoon,
   FiUsers,
   FiTool,
-  FiUser,
   FiLogOut,
+  FiChevronRight,
+  FiGlobe,
+  FiHexagon,
 } from "react-icons/fi";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { useNavigate } from "react-router-dom";
+  Sidebar,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarContent,
+  SidebarGroupLabel,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+import { useNavigate, Link } from "react-router-dom";
 
 const SideBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -42,106 +57,134 @@ const SideBar = () => {
   };
 
   return (
-    <aside className="w-48 bg-darkgreen text-text flex flex-col fixed top-0 left-0 h-full text-light">
-      <div className="p-4">
-        <h1 className="text-2xl font-bold">Budgy</h1>
-      </div>
-      <nav className="flex-1 px-2 space-y-1">
-        <a
-          href="/home"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiHome className="mr-3" />
-          Home
-        </a>
-        <a
-          href="/spendings"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiShoppingCart className="mr-3" />
-          Monthly Spendings
-        </a>
-        <a
-          href="/transactions"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiCreditCard className="mr-3" />
-          Transactions
-        </a>
-        <a
-          href="/charts"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiBarChart2 className="mr-3" />
-          Charts
-        </a>
-        <a
-          href="/test"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiHome className="mr-3" />
-          Test
-        </a>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <FiUsers className="mr-3" />
-              Group
-            </AccordionTrigger>
-            <AccordionContent>
-              <a
-                href="/home"
-                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen pl-8"
+    <Sidebar collapsible="offcanvas" variant="inset">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem className="mr-2">
+            <SidebarMenuButton className="cursor-pointer py-6" asChild>
+              <Link to="/home">
+                <h1 className="text-3xl font-bold text-lemongreen">Budgy</h1>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/spendings">
+                  <FiShoppingCart />
+                  Monthly Spendings
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/transactions">
+                  <FiCreditCard />
+                  Transactions
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/charts">
+                  <FiBarChart2 />
+                  Charts
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/test">
+                  <FiHexagon />
+                  Test
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Groups</SidebarGroupLabel>
+          <SidebarMenu>
+            <Collapsible asChild className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton
+                    tooltip="MyGroup"
+                    className="cursor-pointer"
+                  >
+                    <FiUsers />
+                    My Group
+                    <FiChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link to="#">Karo</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link to="#">
+                          <FiGlobe />
+                          Shared Account
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link to="/group-management">
+                          <FiTool />
+                          Manage Group
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarGroup>
+          <SidebarGroupLabel>Controls</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="#">
+                  <FiSettings />
+                  Settings
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={toggleDarkMode}
+                className="cursor-pointer"
               >
-                <FiUser className="mr-3" />
-                Karo
-              </a>
-              <a
-                href="/home"
-                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen pl-8"
+                {isDarkMode ? <FiSun /> : <FiMoon />}
+                {isDarkMode ? "Light Mode" : "Dark Mode"}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={handleLogout}
+                className="cursor-pointer"
               >
-                <FiUser className="mr-3" />
-                Somsiad
-              </a>
-              <a
-                href="/group-management"
-                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen pl-8"
-              >
-                <FiTool className="mr-3" />
-                Manage group
-              </a>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </nav>
-      <div className="p-2 mt-auto">
-        <a
-          href="#"
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen"
-        >
-          <FiSettings className="mr-3" />
-          Settings
-        </a>
-        <button
-          onClick={toggleDarkMode}
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen cursor-pointer w-full"
-        >
-          {isDarkMode ? (
-            <FiSun className="mr-3" />
-          ) : (
-            <FiMoon className="mr-3" />
-          )}
-          {isDarkMode ? "Light Mode" : "Dark Mode"}
-        </button>
-        <button
-          onClick={handleLogout}
-          className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-forestgreen cursor-pointer w-full"
-        >
-          <FiLogOut className="mr-3" />
-          Log Out
-        </button>
-      </div>
-    </aside>
+                <FiLogOut />
+                Log Out
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarFooter>
+    </Sidebar>
   );
 };
 

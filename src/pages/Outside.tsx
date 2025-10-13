@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import Login from '../components/auth/Login';
-import Register from '../components/auth/Register';
+import { useState } from "react";
+import Login from "../components/auth/Login";
+import Register from "../components/auth/Register";
 
 const Outside = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,8 +10,12 @@ const Outside = () => {
   };
 
   return (
-    <main className="w-full max-w-md mx-auto p-6">
-      {isLogin ? <Login onSwitch={handleSwitch} /> : <Register onSwitch={handleSwitch} />}
+    <main className="w-full max-w-md mx-auto flex flex-col justify-center">
+      {isLogin ? (
+        <Login onSwitch={handleSwitch} />
+      ) : (
+        <Register onSwitch={handleSwitch} />
+      )}
     </main>
   );
 };

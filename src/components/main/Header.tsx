@@ -1,10 +1,10 @@
-import { FiSearch, FiBell, FiMessageCircle, FiPlus } from "react-icons/fi";
+import { FiSearch, FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <header className="bg-bg-light shadow-sm p-4 flex justify-between items-center">
-      <div className="flex items-center flex-1">
+      <div className="flex items-center flex-1 ml-4">
         <div className="relative w-full">
           <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-text-secondary dark:text-dark-text-secondary" />
           <input
@@ -21,13 +21,6 @@ const Header = () => {
             ADD NEW
           </button>
         </Link>
-        <FiBell className="text-text-secondary dark:text-dark-text-secondary w-5 h-5 cursor-pointer" />
-        <FiMessageCircle className="text-text-secondary dark:text-dark-text-secondary w-5 h-5 cursor-pointer" />
-        <img
-          className="w-10 h-10 rounded-full cursor-pointer"
-          src="https://randomuser.me/api/portraits/women/79.jpg"
-          alt="user photo"
-        />
       </div>
     </header>
   );
