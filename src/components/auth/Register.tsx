@@ -47,7 +47,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: data.username,
+          username: data.username,
           email: data.email,
           password: data.password,
         }),

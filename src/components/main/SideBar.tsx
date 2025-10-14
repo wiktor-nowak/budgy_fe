@@ -107,7 +107,7 @@ const SideBar = () => {
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Groups</SidebarGroupLabel>
+          <SidebarGroupLabel>Accounts</SidebarGroupLabel>
           <SidebarMenu>
             <Collapsible asChild className="group/collapsible">
               <SidebarMenuItem>
@@ -117,7 +117,7 @@ const SideBar = () => {
                     className="cursor-pointer"
                   >
                     <FiUsers />
-                    My Group
+                    My Accounts
                     <FiChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -125,7 +125,17 @@ const SideBar = () => {
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
-                        <Link to="#">Karo</Link>
+                        <Link to="#">Karo Bank</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link to="#">Karo Cash</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link to="#">Karo Business</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
@@ -157,7 +167,7 @@ const SideBar = () => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="#">
+                <Link to="/settings">
                   <FiSettings />
                   Settings
                 </Link>
