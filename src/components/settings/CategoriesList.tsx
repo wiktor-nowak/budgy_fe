@@ -1,4 +1,3 @@
-import { type Category } from "@/pages/Settings";
 import {
   Table,
   TableBody,
@@ -7,11 +6,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "../ui/button";
+import { useState } from "react";
 
-const CategoriesList = ({ categories }: { categories: Category[] }) => {
+export interface Category {
+  name: string;
+  shortcut: string;
+}
+
+const CategoriesList = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:3003/api/categories");
+
+      if (!response.ok) {
+        throw new Error("Response not okay!");
+      }
+
+      const categoriesReceived = await response.json();
+      setCategories(() => {
+        return categoriesReceived.response.map(
+          (category: { name: string; shortcut: string }) => {
+            const { name, shortcut } = category;
+            return {
+              name,
+              shortcut,
+            };
+          }
+        );
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4">Categories</h2>
+      <Button onClick={fetchCategories}>REFRESH</Button>
       <Table>
         <TableHeader>
           <TableRow>

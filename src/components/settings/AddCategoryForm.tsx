@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
-import { type Category } from "@/pages/Settings";
+// import { type Category } from "@/pages/Settings";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,11 +25,7 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-const AddCategoryForm = ({
-  onAddCategory,
-}: {
-  onAddCategory: (category: Category) => void;
-}) => {
+const AddCategoryForm = () => {
   const {
     register,
     handleSubmit,
@@ -46,6 +42,7 @@ const AddCategoryForm = ({
     },
   });
 
+  const [error, setError] = useState<string | null>(null);
   const [isShortcutManuallyChanged, setIsShortcutManuallyChanged] =
     useState(false);
 
@@ -61,8 +58,30 @@ const AddCategoryForm = ({
     }
   }, [name, isShortcutManuallyChanged, setValue]);
 
-  const onSubmit = (data: FormFields) => {
-    onAddCategory({ name: data.name, shortcut: data.shortcut });
+  const onSubmit = async (data: FormFields) => {
+    try {
+      const { name, shortcut } = data;
+      const response = await fetch("http://localhost:3003/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          shortcut,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Response not okay!");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData.response);
+    } catch (error) {
+      setError("Registration failed");
+      console.error(error);
+    }
     reset();
   };
 
@@ -74,6 +93,7 @@ const AddCategoryForm = ({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          {error && <p className="text-red-500 text-xs">{error}</p>}
           <div className="grid gap-2">
             <Label htmlFor="name">Name</Label>
             <Input id="name" {...register("name")} />

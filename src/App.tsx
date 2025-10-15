@@ -4,7 +4,7 @@ import Outside from "./pages/Outside";
 import MonthlySpendings from "./pages/MonthlySpendings";
 import Transactions from "./pages/Transactions";
 import Charts from "./pages/Charts";
-import GroupManagement from "./pages/GroupManagement";
+import ManageAccounts from "./pages/ManageAccounts";
 import AddSpending from "./pages/AddSpending";
 import TestPage from "./pages/TestPage";
 import Settings from "./pages/Settings";
@@ -21,7 +21,7 @@ function App() {
           <Route path="/spendings" element={<MonthlySpendings />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/charts" element={<Charts />} />
-          <Route path="/group-management" element={<GroupManagement />} />
+          <Route path="/manage-accounts" element={<ManageAccounts />} />
           <Route path="/add-spending" element={<AddSpending />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/settings" element={<Settings />} />

@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -37,7 +37,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
     resolver: zodResolver(schema),
   });
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const onSubmit = async (data: FormFields) => {
     try {
@@ -60,8 +60,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
       }
 
       const responseData = await response.json();
-      localStorage.setItem("token", responseData.token);
-      navigate("/home");
+      console.log(responseData.response);
     } catch (error) {
       setError("Registration failed");
       console.error(error);

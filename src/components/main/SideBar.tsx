@@ -148,9 +148,9 @@ const SideBar = () => {
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
-                        <Link to="/group-management">
+                        <Link to="/manage-accounts">
                           <FiTool />
-                          Manage Group
+                          Manage Accounts
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
