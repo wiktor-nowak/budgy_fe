@@ -9,6 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { useState } from "react";
 import type { ACCOUNT_TYPES_UNION } from "@/lib/types";
+import { Trash2 } from "lucide-react";
 
 export interface Account {
   name: string;
@@ -63,6 +64,7 @@ const AccountsList = () => {
             <TableHead>Type</TableHead>
             <TableHead>Balance</TableHead>
             <TableHead>Description</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -72,6 +74,15 @@ const AccountsList = () => {
               <TableCell>{account.type}</TableCell>
               <TableCell>{account.balance}</TableCell>
               <TableCell>{account.description}</TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => console.log(`Deleting account: ${account.name}`)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
