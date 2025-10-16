@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ACCOUNT_TYPES } from "@/lib/constants";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { type Account, updateAccount } from "@/api/accounts";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -35,12 +36,21 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-const AddAccountForm = () => {
+interface AddAccountFormProps {
+  accountToEdit: Account | null;
+  setAccountToEdit: (account: Account | null) => void;
+}
+
+const AddAccountForm = ({
+  accountToEdit,
+  setAccountToEdit,
+}: AddAccountFormProps) => {
   const {
     register,
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormFields>({
     resolver: zodResolver(schema) as Resolver<FormFields>,
@@ -54,33 +64,40 @@ const AddAccountForm = () => {
 
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (accountToEdit) {
+      setValue("name", accountToEdit.name);
+      setValue("type", accountToEdit.type);
+      setValue("balance", accountToEdit.balance);
+      setValue("description", accountToEdit.description);
+    }
+  }, [accountToEdit, setValue]);
+
   const onSubmit = async (data: FormFields) => {
     try {
       const token = localStorage.getItem("token");
-      const { name, type, balance, description } = data;
-      const response = await fetch("http://localhost:3003/api/accounts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name,
-          type,
-          balance,
-          description,
-          token,
-        }),
-      });
+      if (accountToEdit) {
+        await updateAccount(accountToEdit.id, data);
+        setAccountToEdit(null);
+      } else {
+        const response = await fetch("http://localhost:3003/api/accounts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
 
-      if (!response.ok) {
-        throw new Error("Response not okay!");
+        if (!response.ok) {
+          throw new Error("Response not okay!");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData.response);
       }
-
-      const responseData = await response.json();
-      console.log(responseData.response);
     } catch (error) {
-      setError("Registration failed");
+      setError("Operation failed");
       console.error(error);
     }
     reset();
@@ -89,8 +106,14 @@ const AddAccountForm = () => {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Add Account</CardTitle>
-        <CardDescription>Enter the details of the new account</CardDescription>
+        <CardTitle className="text-xl">
+          {accountToEdit ? "Update Account" : "Add Account"}
+        </CardTitle>
+        <CardDescription>
+          {accountToEdit
+            ? "Enter the new details of the account"
+            : "Enter the details of the new account"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
@@ -108,7 +131,11 @@ const AddAccountForm = () => {
               name="type"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={!!accountToEdit}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select an account type" />
                   </SelectTrigger>
@@ -143,7 +170,7 @@ const AddAccountForm = () => {
             <Textarea id="description" {...register("description")} />
           </div>
           <Button type="submit" className="w-full">
-            Add Account
+            {accountToEdit ? "Update Account" : "Add Account"}
           </Button>
         </form>
       </CardContent>

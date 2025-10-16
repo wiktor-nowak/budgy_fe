@@ -7,18 +7,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { useState } from "react";
-import { Trash2 } from "lucide-react";
-import { deleteCategory, getCategories } from "@/api/categories";
+import { useEffect, useState } from "react";
+import { FilePenLine, Trash2 } from "lucide-react";
+import {
+  deleteCategory,
+  getCategories,
+  getCategory,
+  type Category,
+} from "@/api/categories";
 
-export interface Category {
-  id: number;
-  name: string;
-  shortcut: string;
+interface CategoriesListProps {
+  categoryToEdit: Category | null;
+  setCategoryToEdit: (category: Category) => void;
 }
 
-const CategoriesList = () => {
+const CategoriesList = ({
+  setCategoryToEdit,
+  categoryToEdit,
+}: CategoriesListProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    if (categoryToEdit === null) {
+      fetchCategories();
+    }
+  }, [categoryToEdit]);
 
   const fetchCategories = async () => {
     try {
@@ -38,6 +51,15 @@ const CategoriesList = () => {
     }
   };
 
+  const handleEdit = async (id: number) => {
+    try {
+      const category = await getCategory(id);
+      setCategoryToEdit(category);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4">Categories</h2>
@@ -45,10 +67,10 @@ const CategoriesList = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Shortcut</TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead></TableHead>
+            <TableHead className="w-[400px]">Name</TableHead>
+            <TableHead className="w-[100px]">Shortcut</TableHead>
+            <TableHead className="w-[50px]">ID</TableHead>
+            <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -57,14 +79,23 @@ const CategoriesList = () => {
               <TableCell>{category.name}</TableCell>
               <TableCell>{category.shortcut}</TableCell>
               <TableCell>{category.id}</TableCell>
-              <TableCell>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeCategory(category.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <TableCell className="text-right">
+                <div className="flex justify-end space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEdit(category.id)}
+                  >
+                    <FilePenLine className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeCategory(category.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

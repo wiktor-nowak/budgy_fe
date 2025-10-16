@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
-// import { type Category } from "@/pages/Settings";
+import { updateCategory, type Category } from "@/api/categories";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,7 +25,15 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-const AddCategoryForm = () => {
+interface AddCategoryFormProps {
+  categoryToEdit: Category | null;
+  setCategoryToEdit: (category: Category | null) => void;
+}
+
+const AddCategoryForm = ({
+  categoryToEdit,
+  setCategoryToEdit,
+}: AddCategoryFormProps) => {
   const {
     register,
     handleSubmit,
@@ -49,6 +57,13 @@ const AddCategoryForm = () => {
   const name = watch("name");
 
   useEffect(() => {
+    if (categoryToEdit) {
+      setValue("name", categoryToEdit.name);
+      setValue("shortcut", categoryToEdit.shortcut);
+    }
+  }, [categoryToEdit, setValue]);
+
+  useEffect(() => {
     if (!isShortcutManuallyChanged && name) {
       if (name.length > 6) {
         setValue("shortcut", name.slice(0, 6).toUpperCase());
@@ -61,25 +76,30 @@ const AddCategoryForm = () => {
   const onSubmit = async (data: FormFields) => {
     try {
       const { name, shortcut } = data;
-      const response = await fetch("http://localhost:3003/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          shortcut,
-        }),
-      });
+      if (categoryToEdit) {
+        await updateCategory(categoryToEdit.id, { name, shortcut });
+        setCategoryToEdit(null);
+      } else {
+        const response = await fetch("http://localhost:3003/api/categories", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            shortcut,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Response not okay!");
+        if (!response.ok) {
+          throw new Error("Response not okay!");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData.response);
       }
-
-      const responseData = await response.json();
-      console.log(responseData.response);
     } catch (error) {
-      setError("Registration failed");
+      setError("Operation failed");
       console.error(error);
     }
     reset();
@@ -88,8 +108,14 @@ const AddCategoryForm = () => {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Add Category</CardTitle>
-        <CardDescription>Enter the details of the new category</CardDescription>
+        <CardTitle className="text-xl">
+          {categoryToEdit ? "Update Category" : "Add Category"}
+        </CardTitle>
+        <CardDescription>
+          {categoryToEdit
+            ? "Enter the new details of the category"
+            : "Enter the details of the new category"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
@@ -128,7 +154,7 @@ const AddCategoryForm = () => {
             </label>
           </div>
           <Button type="submit" className="w-full">
-            Add Category
+            {categoryToEdit ? "Update Category" : "Add Category"}
           </Button>
         </form>
       </CardContent>
