@@ -90,7 +90,7 @@ const AddAccountForm = ({
         });
 
         if (!response.ok) {
-          throw new Error("Response not okay!");
+          throw new Error("Response not okay!: " + response.status);
         }
 
         const responseData = await response.json();
