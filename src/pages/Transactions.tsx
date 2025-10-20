@@ -1,3 +1,7 @@
+import { Fragment, useEffect, useState } from "react";
+import { getExpenses, updateExpense, type ExpenseData, type ExpenseUpdateData } from "@/api/expenses";
+import { getCategories, type Category } from "@/api/categories";
+import { getMyAccounts, type Account } from "@/api/accounts";
 import {
   Table,
   TableBody,
@@ -11,73 +15,56 @@ import {
   FiDollarSign,
   FiCheck,
   FiX,
-  FiChevronDown,
+  FiEdit,
 } from "react-icons/fi";
-
-const transactions = [
-  {
-    date: new Date("2024-05-01"),
-    category: "Food",
-    amount: -50.0,
-    method: "card",
-    splitted: true,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    date: new Date("2024-05-02"),
-    category: "Salary",
-    amount: 5000.0,
-    method: "cash",
-    splitted: false,
-    description:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-  },
-  {
-    date: new Date("2024-05-03"),
-    category: "Car",
-    amount: -200.0,
-    method: "card",
-    splitted: true,
-    description:
-      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    date: new Date("2024-05-04"),
-    category: "Home",
-    amount: -1000.0,
-    method: "cash",
-    splitted: false,
-    description:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
-  },
-  {
-    date: new Date("2024-05-05"),
-    category: "Bonus",
-    amount: 1000.0,
-    method: "card",
-    splitted: false,
-    description:
-      "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
-  },
-];
+import ExpenseForm from "@/components/forms/ExpenseForm";
 
 const Transactions = () => {
-  const handleIconClick = (method: string) => {
-    console.log(`Clicked on ${method} icon`);
+  const [transactions, setTransactions] = useState<ExpenseData[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [openRowId, setOpenRowId] = useState<string | null>(null);
+
+  const fetchData = async () => {
+    try {
+      const [expenseData, accountsData, categoriesData] = await Promise.all([
+        getExpenses(),
+        getMyAccounts(),
+        getCategories(),
+      ]);
+      setTransactions(expenseData);
+      setAccounts(accountsData);
+      setCategories(categoriesData);
+    } catch (err) {
+      setError("Failed to fetch transaction data.");
+      console.error(err);
+    }
   };
 
-  const handleDateClick = (date: Date) => {
-    console.log(`Clicked on date: ${date}`);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleToggleEdit = (id: string) => {
+    setOpenRowId(openRowId === id ? null : id);
   };
 
-  const handleCategoryClick = (category: string) => {
-    console.log(`Clicked on category: ${category}`);
+  const handleUpdateExpense = async (data: ExpenseUpdateData) => {
+    if (!openRowId) return;
+    try {
+      await updateExpense(openRowId, data);
+      setOpenRowId(null);
+      fetchData(); // Refresh data after update
+    } catch (error) {
+      console.error("Failed to update expense", error);
+      setError("Failed to update expense.");
+    }
   };
 
-  const handleRowClick = (index: number) => {
-    console.log(`Clicked on row ${index}`);
-  };
+  if (error) {
+    return <div className="text-red-500 p-4">{error}</div>;
+  }
 
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg">
@@ -91,79 +78,69 @@ const Transactions = () => {
             <TableHead className="p-2">Category</TableHead>
             <TableHead className="p-2 text-right pr-4">Amount</TableHead>
             <TableHead className="p-2 text-center">Method</TableHead>
-            <TableHead className="p-2 text-center">Splitted</TableHead>
+            <TableHead className="p-2 text-center">Shared</TableHead>
             <TableHead className="p-2">Details</TableHead>
             <TableHead className="p-2"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((transaction, index) => (
-            <TableRow
-              key={index}
-              className="border-b border-bg dark:border-dark-bg"
-            >
-              <TableCell className="p-2">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => handleDateClick(transaction.date)}
-                >
-                  {transaction.date.toLocaleDateString("en-GB")}
-                </span>
-              </TableCell>
-              <TableCell className="p-2">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => handleCategoryClick(transaction.category)}
-                >
-                  {transaction.category.substring(0, 30)}
-                </span>
-              </TableCell>
-              <TableCell
-                className={`p-2 text-right pr-4 ${
-                  transaction.amount > 0 ? "text-success" : "text-warning"
+          {transactions.map((transaction) => (
+            <Fragment key={transaction.id}>
+              <TableRow
+                className={`border-b border-bg dark:border-dark-bg ${
+                  openRowId === transaction.id ? "text-gray-400 dark:text-gray-500" : ""
                 }`}
               >
-                {transaction.amount.toFixed(2)} PLN
-              </TableCell>
-              <TableCell className="p-2 text-center">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => handleIconClick(transaction.method)}
-                >
-                  {transaction.method === "card" ? (
-                    <FiCreditCard className="mx-auto" />
-                  ) : (
+                <TableCell className="p-2">
+                  {new Date(transaction.createdAt).toLocaleDateString("en-GB")}
+                </TableCell>
+                <TableCell className="p-2">
+                  {transaction.category.name}
+                </TableCell>
+                <TableCell className="p-2 text-right pr-4 text-warning">
+                  -{Math.abs(transaction.amount).toFixed(2)} PLN
+                </TableCell>
+                <TableCell className="p-2 text-center">
+                  {transaction.account.type === "CASH" ? (
                     <FiDollarSign className="mx-auto" />
+                  ) : (
+                    <FiCreditCard className="mx-auto" />
                   )}
-                </span>
-              </TableCell>
-              <TableCell className="p-2 text-center">
-                <span
-                  className="cursor-pointer"
-                  onClick={() =>
-                    handleIconClick(
-                      transaction.splitted ? "splitted" : "not splitted"
-                    )
-                  }
-                >
-                  {transaction.splitted ? (
+                </TableCell>
+                <TableCell className="p-2 text-center">
+                  {transaction.shared ? (
                     <FiCheck className="mx-auto" />
                   ) : (
                     <FiX className="mx-auto" />
                   )}
-                </span>
-              </TableCell>
-              <TableCell className="p-2">
-                {transaction.description.substring(0, 50)}
-                {transaction.description.length > 50 && "..."}
-              </TableCell>
-              <TableCell className="p-2 text-right">
-                <FiChevronDown
-                  className="cursor-pointer"
-                  onClick={() => handleRowClick(index)}
-                />
-              </TableCell>
-            </TableRow>
+                </TableCell>
+                <TableCell className="p-2">
+                  {transaction.description?.substring(0, 50) || ""}
+                  {transaction.description && transaction.description.length > 50 && "..."}
+                </TableCell>
+                <TableCell className="p-2 text-right">
+                  <FiEdit
+                    className="cursor-pointer"
+                    onClick={() => handleToggleEdit(transaction.id)}
+                  />
+                </TableCell>
+              </TableRow>
+              {openRowId === transaction.id && (
+                <TableRow>
+                  <TableCell colSpan={7} className="p-0">
+                    <div>
+                      <ExpenseForm
+                        expense={transaction}
+                        accounts={accounts}
+                        categories={categories}
+                        onSave={handleUpdateExpense}
+                        onCancel={() => setOpenRowId(null)}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </Fragment>
           ))}
         </TableBody>
       </Table>
