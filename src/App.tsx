@@ -8,6 +8,7 @@ import ManageAccounts from "./pages/ManageAccounts";
 import AddSpending from "./pages/AddSpending";
 import TestPage from "./pages/TestPage";
 import Settings from "./pages/Settings";
+import Account from "./pages/Account";
 import Layout from "./layout/Layout";
 import ProtectedRoute from "./layout/ProtectedRoute";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/add-spending" element={<AddSpending />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/account/:id" element={<Account />} />
         </Route>
       </Route>
     </Routes>

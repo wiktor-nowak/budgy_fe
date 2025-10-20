@@ -8,6 +8,8 @@ export interface Account {
   type: ACCOUNT_TYPES_UNION;
   balance: number;
   description: string;
+  owner?: { username: string };
+  coOwners?: { user: { username: string } }[];
 }
 
 export const getAccounts = async (): Promise<Account[]> => {
@@ -21,7 +23,23 @@ export const getAccounts = async (): Promise<Account[]> => {
   return accountsReceived.response;
 };
 
-export const getAccount = async (id: number): Promise<Account> => {
+export const getMyAccounts = async (): Promise<Account[]> => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_ACCOUNTS}/my-accounts`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not fetch user accounts!");
+  }
+
+  const accountsReceived = await response.json();
+  return accountsReceived.response;
+};
+
+export const getAccount = async (id: string): Promise<Account> => {
   const response = await fetch(`${API_ACCOUNTS}/${id}`);
 
   if (!response.ok) {

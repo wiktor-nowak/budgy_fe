@@ -10,7 +10,6 @@ import {
   FiTool,
   FiLogOut,
   FiChevronRight,
-  FiGlobe,
   FiHexagon,
 } from "react-icons/fi";
 import {
@@ -35,9 +34,25 @@ import {
 
 import { useNavigate, Link } from "react-router-dom";
 
+import { getMyAccounts, type Account } from "@/api/accounts";
+
 const SideBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [myAccounts, setMyAccounts] = useState<Account[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const accounts = await getMyAccounts();
+        setMyAccounts(accounts);
+      } catch (error) {
+        console.error("Failed to fetch accounts for sidebar", error);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -123,29 +138,15 @@ const SideBar = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="#">Karo Bank</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="#">Karo Cash</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="#">Karo Business</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="#">
-                          <FiGlobe />
-                          Shared Account
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                    {myAccounts.map((account) => (
+                      <SidebarMenuSubItem key={account.id}>
+                        <SidebarMenuSubButton asChild>
+                          <Link to={`/account/${account.id}`}>
+                            {account.name}
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
                         <Link to="/manage-accounts">
