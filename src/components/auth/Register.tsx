@@ -2,6 +2,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -10,9 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -29,15 +35,15 @@ const schema = z
 type FormFields = z.infer<typeof schema>;
 
 const Register = ({ onSwitch }: { onSwitch: () => void }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormFields>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
-  const [error, setError] = useState<string | null>(null);
-  // const navigate = useNavigate();
 
   const onSubmit = async (data: FormFields) => {
     try {
@@ -55,14 +61,14 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.error || "Registration failed");
+        toast.error(errorData.error || "Registration failed");
         return;
       }
 
-      const responseData = await response.json();
-      console.log(responseData.response);
+      toast.success("Registration successful! You can now sign in.");
+      form.reset();
     } catch (error) {
-      setError("Registration failed");
+      toast.error("Registration failed");
       console.error(error);
     }
   };
@@ -76,54 +82,68 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" {...register("username")} />
-            {errors.username && (
-              <p className="text-red-500 text-xs">{errors.username.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              {...register("email")}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" {...register("password")} />
-            {errors.password && (
-              <p className="text-red-500 text-xs">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...register("confirmPassword")}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="m@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-          <Button type="submit" className="w-full">
-            Create an account
-          </Button>
-          <Button variant="outline" className="w-full" onClick={onSwitch}>
-            Sign in
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Create an account
+            </Button>
+            <Button variant="outline" className="w-full" onClick={onSwitch}>
+              Sign in
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

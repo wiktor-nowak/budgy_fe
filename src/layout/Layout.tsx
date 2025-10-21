@@ -3,6 +3,7 @@ import Header from "../components/main/Header";
 import Footer from "../components/main/Footer";
 import { Outlet } from "react-router-dom";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 const Layout = () => {
   return (
@@ -15,6 +16,7 @@ const Layout = () => {
         </main>
         <Footer />
       </SidebarInset>
+      <Toaster />
     </>
   );
 };

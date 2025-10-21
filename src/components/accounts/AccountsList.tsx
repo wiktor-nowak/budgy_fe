@@ -51,7 +51,7 @@ const AccountsList = ({
     }
   };
 
-  const handleEdit = async (id: number) => {
+  const handleEdit = async (id: string) => {
     try {
       const account = await getAccount(id);
       setAccountToEdit(account);
@@ -86,7 +86,7 @@ const AccountsList = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleEdit(account.id)}
+                    onClick={() => handleEdit(String(account.id))}
                   >
                     <FilePenLine className="h-4 w-4" />
                   </Button>

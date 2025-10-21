@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { getExpenses, updateExpense, type ExpenseData, type ExpenseUpdateData } from "@/api/expenses";
 import { getCategories, type Category } from "@/api/categories";
 import { getMyAccounts, type Account } from "@/api/accounts";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -23,7 +24,6 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState<ExpenseData[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [openRowId, setOpenRowId] = useState<string | null>(null);
 
   const fetchData = async () => {
@@ -37,7 +37,7 @@ const Transactions = () => {
       setAccounts(accountsData);
       setCategories(categoriesData);
     } catch (err) {
-      setError("Failed to fetch transaction data.");
+      toast.error("Failed to fetch transaction data.");
       console.error(err);
     }
   };
@@ -55,16 +55,13 @@ const Transactions = () => {
     try {
       await updateExpense(openRowId, data);
       setOpenRowId(null);
+      toast.success("Expense updated successfully!");
       fetchData(); // Refresh data after update
     } catch (error) {
       console.error("Failed to update expense", error);
-      setError("Failed to update expense.");
+      toast.error("Failed to update expense.");
     }
   };
-
-  if (error) {
-    return <div className="text-red-500 p-4">{error}</div>;
-  }
 
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg">

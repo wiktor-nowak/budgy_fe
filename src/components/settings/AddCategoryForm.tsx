@@ -2,6 +2,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -10,7 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
 import { updateCategory, type Category } from "@/api/categories";
@@ -34,14 +42,7 @@ const AddCategoryForm = ({
   categoryToEdit,
   setCategoryToEdit,
 }: AddCategoryFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<FormFields>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
@@ -50,28 +51,27 @@ const AddCategoryForm = ({
     },
   });
 
-  const [error, setError] = useState<string | null>(null);
   const [isShortcutManuallyChanged, setIsShortcutManuallyChanged] =
     useState(false);
 
-  const name = watch("name");
+  const name = form.watch("name");
 
   useEffect(() => {
     if (categoryToEdit) {
-      setValue("name", categoryToEdit.name);
-      setValue("shortcut", categoryToEdit.shortcut);
+      form.setValue("name", categoryToEdit.name);
+      form.setValue("shortcut", categoryToEdit.shortcut);
     }
-  }, [categoryToEdit, setValue]);
+  }, [categoryToEdit, form]);
 
   useEffect(() => {
     if (!isShortcutManuallyChanged && name) {
       if (name.length > 6) {
-        setValue("shortcut", name.slice(0, 6).toUpperCase());
+        form.setValue("shortcut", name.slice(0, 6).toUpperCase());
       } else {
-        setValue("shortcut", name.toUpperCase());
+        form.setValue("shortcut", name.toUpperCase());
       }
     }
-  }, [name, isShortcutManuallyChanged, setValue]);
+  }, [name, isShortcutManuallyChanged, form]);
 
   const onSubmit = async (data: FormFields) => {
     try {
@@ -79,6 +79,7 @@ const AddCategoryForm = ({
       if (categoryToEdit) {
         await updateCategory(categoryToEdit.id, { name, shortcut });
         setCategoryToEdit(null);
+        toast.success("Category updated successfully!");
       } else {
         const response = await fetch("http://localhost:3003/api/categories", {
           method: "POST",
@@ -95,14 +96,13 @@ const AddCategoryForm = ({
           throw new Error("Response not okay!");
         }
 
-        const responseData = await response.json();
-        console.log(responseData.response);
+        toast.success("Category added successfully!");
       }
+      form.reset();
     } catch (error) {
-      setError("Operation failed");
+      toast.error("Operation failed");
       console.error(error);
     }
-    reset();
   };
 
   return (
@@ -118,45 +118,59 @@ const AddCategoryForm = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" {...register("name")} />
-            {errors.name && (
-              <p className="text-red-500 text-xs">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="shortcut">Shortcut</Label>
-            <Input
-              id="shortcut"
-              {...register("shortcut")}
-              disabled={!isShortcutManuallyChanged}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.shortcut && (
-              <p className="text-red-500 text-xs">{errors.shortcut.message}</p>
-            )}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="changeShortcut"
-              {...register("changeShortcut")}
-              onCheckedChange={(checked) => {
-                setIsShortcutManuallyChanged(!!checked);
-              }}
+            <FormField
+              control={form.control}
+              name="shortcut"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Shortcut</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!isShortcutManuallyChanged} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <label
-              htmlFor="changeShortcut"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Change shortcut
-            </label>
-          </div>
-          <Button type="submit" className="w-full">
-            {categoryToEdit ? "Update Category" : "Add Category"}
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="changeShortcut"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        setIsShortcutManuallyChanged(!!checked);
+                      }}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Change shortcut</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              {categoryToEdit ? "Update Category" : "Add Category"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

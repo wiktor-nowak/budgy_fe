@@ -2,6 +2,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -10,8 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
@@ -22,14 +29,13 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>;
 
 const Login = ({ onSwitch }: { onSwitch: () => void }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormFields>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormFields) => {
@@ -45,14 +51,14 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
       const responseData = await response.json();
 
       if (!response.ok) {
-        setError(responseData.error || "Login failed");
+        toast.error(responseData.error || "Login failed");
         return;
       }
 
       localStorage.setItem("token", responseData.token);
       navigate("/home");
     } catch (error) {
-      setError("Login failed");
+      toast.error("Login failed");
       console.log(error);
     }
   };
@@ -66,39 +72,50 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              {...register("email")}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="m@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <a href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </a>
-            </div>
-            <Input id="password" type="password" {...register("password")} />
-            {errors.password && (
-              <p className="text-red-500 text-xs">{errors.password.message}</p>
-            )}
-          </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <Button variant="outline" className="w-full" onClick={onSwitch}>
-            Sign up
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center">
+                    <FormLabel>Password</FormLabel>
+                    <a
+                      href="#"
+                      className="ml-auto inline-block text-sm underline"
+                    >
+                      Forgot your password?
+                    </a>
+                  </div>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+            <Button variant="outline" className="w-full" onClick={onSwitch}>
+              Sign up
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

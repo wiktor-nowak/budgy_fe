@@ -1,7 +1,16 @@
-import { useForm, Controller, type Resolver } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -10,7 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -20,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ACCOUNT_TYPES } from "@/lib/constants";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { type Account, updateAccount } from "@/api/accounts";
 
 const schema = z.object({
@@ -45,14 +53,7 @@ const AddAccountForm = ({
   accountToEdit,
   setAccountToEdit,
 }: AddAccountFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm<FormFields>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(schema) as Resolver<FormFields>,
     defaultValues: {
       name: "",
@@ -62,16 +63,14 @@ const AddAccountForm = ({
     },
   });
 
-  const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     if (accountToEdit) {
-      setValue("name", accountToEdit.name);
-      setValue("type", accountToEdit.type);
-      setValue("balance", accountToEdit.balance);
-      setValue("description", accountToEdit.description);
+      form.setValue("name", accountToEdit.name);
+      form.setValue("type", accountToEdit.type);
+      form.setValue("balance", accountToEdit.balance);
+      form.setValue("description", accountToEdit.description);
     }
-  }, [accountToEdit, setValue]);
+  }, [accountToEdit, form]);
 
   const onSubmit = async (data: FormFields) => {
     try {
@@ -79,6 +78,7 @@ const AddAccountForm = ({
       if (accountToEdit) {
         await updateAccount(accountToEdit.id, data);
         setAccountToEdit(null);
+        toast.success("Account updated successfully!");
       } else {
         const response = await fetch("http://localhost:3003/api/accounts", {
           method: "POST",
@@ -93,14 +93,13 @@ const AddAccountForm = ({
           throw new Error("Response not okay!: " + response.status);
         }
 
-        const responseData = await response.json();
-        console.log(responseData.response);
+        toast.success("Account added successfully!");
       }
+      form.reset();
     } catch (error) {
-      setError("Operation failed");
+      toast.error("Operation failed");
       console.error(error);
     }
-    reset();
   };
 
   return (
@@ -116,63 +115,80 @@ const AddAccountForm = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" {...register("name")} />
-            {errors.name && (
-              <p className="text-red-500 text-xs">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="type">Type</Label>
-            <Controller
-              name="type"
-              control={control}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="name"
               render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={!!accountToEdit}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select an account type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ACCOUNT_TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
-            {errors.type && (
-              <p className="text-red-500 text-xs">{errors.type.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="balance">Balance</Label>
-            <Input
-              id="balance"
-              type="number"
-              step="0.01"
-              {...register("balance")}
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={!!accountToEdit}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select an account type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ACCOUNT_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.balance && (
-              <p className="text-red-500 text-xs">{errors.balance.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" {...register("description")} />
-          </div>
-          <Button type="submit" className="w-full">
-            {accountToEdit ? "Update Account" : "Add Account"}
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="balance"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Balance</FormLabel>
+                  <FormControl>
+                    <Input type="number" step="0.01" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              {accountToEdit ? "Update Account" : "Add Account"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
