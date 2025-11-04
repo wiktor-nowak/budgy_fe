@@ -10,25 +10,26 @@ import {
   ReferenceLine,
 } from "recharts";
 
-interface Category {
-  name: string;
-  planned: number;
-  spent: number;
+interface SummaryItem {
+  categoryName: string;
+  totalSpent: number;
 }
 
 interface MonthlyChartProps {
-  categories: Category[];
+  categories: SummaryItem[];
 }
+
+const PLANNED_BUDGET = 1000;
 
 const MonthlyChart = ({ categories }: MonthlyChartProps) => {
   const data = categories.map((category) => ({
-    name: category.name,
-    Amount: category.spent,
-    Percent: (category.spent * 100) / category.planned,
+    name: category.categoryName,
+    Amount: Number(category.totalSpent),
+    Percent: (Number(category.totalSpent) * 100) / PLANNED_BUDGET,
   }));
 
   return (
-    <div className="">
+    <div className="w-full h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}

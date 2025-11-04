@@ -1,48 +1,84 @@
-import { monthlyData } from "../data/monthlyData";
-import MonthlyChart from "../components/main/MonthlyChart";
-import MonthlyTable from "../components/main/MonthlyTable";
+import { useEffect, useState } from "react";
+import { getExpenseMonths } from "../api/expenses";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import MonthlyDetails from "../components/main/MonthlyDetails";
+
+const monthNames: { [key: number]: string } = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
 
 const MonthlySpendings = () => {
+  const [months, setMonths] = useState<{ year: number; month: number }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMonths = async () => {
+      try {
+        const data = await getExpenseMonths();
+        setMonths(data);
+      } catch (error) {
+        console.error("Failed to fetch expense months", error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchMonths();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg h-full">
       <h2 className="text-text-primary dark:text-dark-text-primary text-lg font-semibold">
         Monthly Spendings
       </h2>
-      <div className="mt-4">
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <nav className="-mb-0.5 flex justify-center space-x-6">
-            {monthlyData.map((data, index) => (
-              <button
-                key={index}
-                type="button"
-                className="hs-tab-active:font-semibold hs-tab-active:border-forestgreen hs-tab-active:text-forestgreen py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-forestgreen focus:outline-none focus:text-forestgreen disabled:opacity-50 disabled:pointer-events-none active"
-                id={`pills-with-brand-color-item-${index}`}
-                data-hs-tab={`#pills-with-brand-color-${index}`}
-                aria-controls={`pills-with-brand-color-${index}`}
-                role="tab"
+      {months.length > 0 ? (
+        <Tabs
+          defaultValue={`${months[0].year}-${months[0].month}`}
+          className="mt-4"
+        >
+          <TabsList>
+            {months.map((m) => (
+              <TabsTrigger
+                key={`${m.year}-${m.month}`}
+                value={`${m.year}-${m.month}`}
               >
-                {data.month}
-              </button>
+                {monthNames[m.month]} {String(m.year).slice(-2)}
+              </TabsTrigger>
             ))}
-          </nav>
-        </div>
-        <div className="mt-3 h-fill">
-          {monthlyData.map((data, index) => (
-            <div
-              key={index}
-              id={`pills-with-brand-color-${index}`}
-              className={`${index === 0 ? "" : "hidden"}`}
-              role="tabpanel"
-              aria-labelledby={`pills-with-brand-color-item-${index}`}
+          </TabsList>
+          {months.map((m) => (
+            <TabsContent
+              key={`${m.year}-${m.month}-content`}
+              value={`${m.year}-${m.month}`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <MonthlyTable categories={data.categories} />
-                <MonthlyChart categories={data.categories} />
-              </div>
-            </div>
+              <MonthlyDetails year={m.year} month={m.month} />
+            </TabsContent>
           ))}
-        </div>
-      </div>
+        </Tabs>
+      ) : (
+        <p className="mt-4 text-text-secondary dark:text-dark-text-secondary">
+          No spending data available to display.
+        </p>
+      )}
     </div>
   );
 };
