@@ -9,6 +9,7 @@ interface MonthlyDetailsProps {
 }
 
 const MonthlyDetails = ({ year, month }: MonthlyDetailsProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [summary, setSummary] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

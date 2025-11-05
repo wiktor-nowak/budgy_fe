@@ -2,7 +2,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { getCategories, type Category } from "@/api/categories";
-import { getMyAccounts, type Account } from "@/api/accounts";
+import { getMyAccounts, getMainAccount, type Account } from "@/api/accounts";
 import { addExpense } from "@/api/expenses";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -44,6 +44,7 @@ type SpendingFormFields = z.infer<typeof spendingSchema>;
 const AddSpending = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [mainAccount, setMainAccount] = useState<string>("");
 
   const form = useForm<SpendingFormFields>({
     resolver: zodResolver(spendingSchema) as Resolver<SpendingFormFields>,
@@ -58,12 +59,16 @@ const AddSpending = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fetchedCategories, fetchedAccounts] = await Promise.all([
-          getCategories(),
-          getMyAccounts(),
-        ]);
+        const [fetchedCategories, fetchedAccounts, mainAccountId] =
+          await Promise.all([
+            getCategories(),
+            getMyAccounts(),
+            getMainAccount(),
+          ]);
         setCategories(fetchedCategories);
         setAccounts(fetchedAccounts);
+        setMainAccount(mainAccountId);
+        form.setValue("accountId", mainAccountId);
       } catch (error) {
         toast.error("Failed to fetch data for AddSpending page");
         console.error("Failed to fetch data for AddSpending page", error);
@@ -77,6 +82,7 @@ const AddSpending = () => {
     try {
       await addExpense(data);
       form.reset();
+      form.setValue("accountId", mainAccount);
       toast.success("Spending added successfully!");
     } catch (error) {
       toast.error(

@@ -1,20 +1,34 @@
 import AddAccountForm from "../components/accounts/AddAccountForm";
 import AccountsList from "../components/accounts/AccountsList";
-import { useState } from "react";
-import { type Account } from "@/api/accounts";
+import { useEffect, useState } from "react";
+import { type Account, getMyAccounts } from "@/api/accounts";
 
 const ManageAccounts = () => {
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  const fetchAccounts = async () => {
+    const myAccounts = await getMyAccounts();
+    setAccounts(myAccounts);
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
 
   return (
     <div>
       <AddAccountForm
         accountToEdit={accountToEdit}
         setAccountToEdit={setAccountToEdit}
+        isFirstAccount={accounts.length === 0}
+        refetchAccounts={fetchAccounts}
       />
       <AccountsList
         setAccountToEdit={setAccountToEdit}
         accountToEdit={accountToEdit}
+        accounts={accounts}
+        refetchAccounts={fetchAccounts}
       />
     </div>
   );

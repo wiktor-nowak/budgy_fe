@@ -29,7 +29,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ACCOUNT_TYPES } from "@/lib/constants";
 import { useEffect } from "react";
-import { type Account, updateAccount } from "@/api/accounts";
+import { type Account, addAccount, updateAccount } from "@/api/accounts";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -42,19 +43,24 @@ const schema = z.object({
   description: z.string(),
 });
 
-type FormFields = z.infer<typeof schema>;
+export type AccountFormFields = z.infer<typeof schema>;
 
 interface AddAccountFormProps {
   accountToEdit: Account | null;
   setAccountToEdit: (account: Account | null) => void;
+  isFirstAccount: boolean;
+  refetchAccounts: () => void;
 }
 
 const AddAccountForm = ({
   accountToEdit,
   setAccountToEdit,
+  isFirstAccount,
+  refetchAccounts,
 }: AddAccountFormProps) => {
-  const form = useForm<FormFields>({
-    resolver: zodResolver(schema) as Resolver<FormFields>,
+  const navigate = useNavigate();
+  const form = useForm<AccountFormFields>({
+    resolver: zodResolver(schema) as Resolver<AccountFormFields>,
     defaultValues: {
       name: "",
       type: "BANK",
@@ -72,33 +78,26 @@ const AddAccountForm = ({
     }
   }, [accountToEdit, form]);
 
-  const onSubmit = async (data: FormFields) => {
+  const onSubmit = async (data: AccountFormFields) => {
     try {
       const token = localStorage.getItem("token");
       if (accountToEdit) {
         await updateAccount(accountToEdit.id, data);
         setAccountToEdit(null);
         toast.success("Account updated successfully!");
-      } else {
-        const response = await fetch("http://localhost:3003/api/accounts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-          throw new Error("Response not okay!: " + response.status);
+      } else if (token) {
+        await addAccount(token, data, isFirstAccount);
+        toast.success("Account created successfully!");
+        if (isFirstAccount) {
+          navigate("/home");
         }
-
-        toast.success("Account added successfully!");
       }
       form.reset();
     } catch (error) {
       toast.error("Operation failed");
       console.error(error);
+    } finally {
+      refetchAccounts();
     }
   };
 

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { getMyAccounts } from "@/api/accounts";
 
 const schema = z.object({
   email: z.string().email(),
@@ -56,7 +57,12 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
       }
 
       localStorage.setItem("token", responseData.token);
-      navigate("/home");
+      const accounts = await getMyAccounts();
+      if (accounts.length === 0) {
+        navigate("/manage-accounts");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       toast.error("Login failed");
       console.log(error);

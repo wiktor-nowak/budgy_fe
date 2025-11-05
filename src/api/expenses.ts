@@ -92,7 +92,9 @@ export const deleteExpense = async (id: string) => {
   }
 };
 
-export const getExpenseMonths = async (): Promise<{ year: number; month: number }[]> => {
+export const getExpenseMonths = async (): Promise<
+  { year: number; month: number }[]
+> => {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_EXPENSES}/months`, {
     headers: {
@@ -108,13 +110,19 @@ export const getExpenseMonths = async (): Promise<{ year: number; month: number 
   return data.response;
 };
 
-export const getMonthlySummary = async (year: number, month: number): Promise<any[]> => {
+export const getMonthlySummary = async (
+  year: number,
+  month: number
+): Promise<unknown[]> => {
   const token = localStorage.getItem("token");
-  const response = await fetch(`${API_EXPENSES}/monthly-summary?year=${year}&month=${month}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${API_EXPENSES}/monthly-summary?year=${year}&month=${month}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Could not fetch monthly summary!");

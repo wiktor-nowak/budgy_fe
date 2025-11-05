@@ -26,7 +26,7 @@ const MonthlyTable = ({ categories }: MonthlyTableProps) => {
           <TableHead className="p-2 font-bold">Category</TableHead>
           <TableHead className="p-2 text-right">Planned</TableHead>
           <TableHead className="p-2 text-right">Spent</TableHead>
-          <TableHead className="p-2 text-right">Spent vs. Planned (%)</TableHead>
+          <TableHead className="p-2 text-right">Percent (%)</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -34,8 +34,13 @@ const MonthlyTable = ({ categories }: MonthlyTableProps) => {
           const spent = Number(category.totalSpent);
           const percent = (spent * 100) / PLANNED_BUDGET;
           return (
-            <TableRow key={index} className="border-b border-bg dark:border-dark-bg">
-              <TableCell className="p-2 font-bold">{category.categoryName}</TableCell>
+            <TableRow
+              key={index}
+              className="border-b border-bg dark:border-dark-bg"
+            >
+              <TableCell className="p-2 font-bold">
+                {category.categoryName}
+              </TableCell>
               <TableCell className="p-2 text-right">
                 {PLANNED_BUDGET.toFixed(2)} PLN
               </TableCell>
@@ -43,7 +48,10 @@ const MonthlyTable = ({ categories }: MonthlyTableProps) => {
                 {spent.toFixed(2)} PLN
               </TableCell>
               <TableCell
-                className={`p-2 text-right ${percent > 100 ? "text-warning" : ""}`}>
+                className={`p-2 text-right ${
+                  percent > 100 ? "text-warning" : ""
+                }`}
+              >
                 {percent.toFixed(2)} %
               </TableCell>
             </TableRow>
