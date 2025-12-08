@@ -31,15 +31,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
-import { useNavigate, Link } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { getMyAccounts, type Account } from "@/api/accounts";
 
 const SideBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [myAccounts, setMyAccounts] = useState<Account[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -66,10 +63,7 @@ const SideBar = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+  const handleLogout = () => {};
 
   return (
     <Sidebar collapsible="offcanvas" variant="inset">

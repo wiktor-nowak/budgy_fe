@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -20,18 +19,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { getMyAccounts } from "@/api/accounts";
+// import { getMyAccounts } from "@/api/accounts";
+import { loginSchema, type LoginFormFields } from "@/schemas/login";
+import { login } from "@/api/login";
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-type FormFields = z.infer<typeof schema>;
-
-const Login = ({ onSwitch }: { onSwitch: () => void }) => {
-  const form = useForm<FormFields>({
-    resolver: zodResolver(schema),
+const Login = () => {
+  const form = useForm<LoginFormFields>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -39,30 +33,13 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
   });
   const navigate = useNavigate();
 
-  const onSubmit = async (data: FormFields) => {
+  const navToRegister = () => navigate("/register");
+
+  const onSubmit = async (data: LoginFormFields) => {
+    console.log(data);
+
     try {
-      const response = await fetch("http://localhost:3003/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        toast.error(responseData.error || "Login failed");
-        return;
-      }
-
-      localStorage.setItem("token", responseData.token);
-      const accounts = await getMyAccounts();
-      if (accounts.length === 0) {
-        navigate("/manage-accounts");
-      } else {
-        navigate("/home");
-      }
+      await login(data);
     } catch (error) {
       toast.error("Login failed");
       console.log(error);
@@ -117,7 +94,11 @@ const Login = ({ onSwitch }: { onSwitch: () => void }) => {
             <Button type="submit" className="w-full">
               Login
             </Button>
-            <Button variant="outline" className="w-full" onClick={onSwitch}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={navToRegister}
+            >
               Sign up
             </Button>
           </form>

@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -34,7 +35,7 @@ const schema = z
 
 type FormFields = z.infer<typeof schema>;
 
-const Register = ({ onSwitch }: { onSwitch: () => void }) => {
+const Register = () => {
   const form = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -44,6 +45,9 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
       confirmPassword: "",
     },
   });
+
+  const navigate = useNavigate();
+  const navToLogin = () => navigate("/");
 
   const onSubmit = async (data: FormFields) => {
     try {
@@ -67,6 +71,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
 
       toast.success("Registration successful! You can now sign in.");
       form.reset();
+      navToLogin();
     } catch (error) {
       toast.error("Registration failed");
       console.error(error);
@@ -139,7 +144,7 @@ const Register = ({ onSwitch }: { onSwitch: () => void }) => {
             <Button type="submit" className="w-full">
               Create an account
             </Button>
-            <Button variant="outline" className="w-full" onClick={onSwitch}>
+            <Button variant="outline" className="w-full" onClick={navToLogin}>
               Sign in
             </Button>
           </form>

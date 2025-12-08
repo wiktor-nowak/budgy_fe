@@ -1,21 +1,9 @@
-import { useState } from "react";
-import Login from "../components/auth/Login";
-import Register from "../components/auth/Register";
+import { Outlet } from "react-router-dom";
 
 const Outside = () => {
-  const [isLogin, setIsLogin] = useState(true);
-
-  const handleSwitch = () => {
-    setIsLogin(!isLogin);
-  };
-
   return (
     <main className="w-full max-w-md mx-auto flex flex-col justify-center">
-      {isLogin ? (
-        <Login onSwitch={handleSwitch} />
-      ) : (
-        <Register onSwitch={handleSwitch} />
-      )}
+      <Outlet />
     </main>
   );
 };
