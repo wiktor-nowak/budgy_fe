@@ -34,12 +34,13 @@ const Login = () => {
   const navigate = useNavigate();
 
   const navToRegister = () => navigate("/register");
+  const navToHome = () => navigate("/home");
 
   const onSubmit = async (data: LoginFormFields) => {
-    console.log(data);
-
     try {
-      await login(data);
+      const result = await login(data);
+      console.log(result);
+      navToHome();
     } catch (error) {
       toast.error("Login failed");
       console.log(error);
