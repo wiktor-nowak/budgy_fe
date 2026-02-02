@@ -20,8 +20,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 // import { getMyAccounts } from "@/api/accounts";
-import { loginSchema, type LoginFormFields } from "@/schemas/login";
-import { login } from "@/api/login";
+import { loginSchema, type LoginFormFields } from "@/schemas/auth";
+import { login } from "@/api/auth";
+import { useAuth } from "@/lib/auth";
 
 const Login = () => {
   const form = useForm<LoginFormFields>({
@@ -32,6 +33,7 @@ const Login = () => {
     },
   });
   const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
 
   const navToRegister = () => navigate("/register");
   const navToHome = () => navigate("/home");
@@ -40,6 +42,7 @@ const Login = () => {
     try {
       const result = await login(data);
       console.log(result);
+      setAccessToken(result.token);
       navToHome();
     } catch (error) {
       toast.error("Login failed");

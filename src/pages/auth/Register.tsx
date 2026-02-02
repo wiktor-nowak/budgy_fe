@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -20,24 +19,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-
-const schema = z
-  .object({
-    username: z.string().min(3),
-    email: z.string().email(),
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type FormFields = z.infer<typeof schema>;
+import { registerSchema, type RegisterFormFields } from "@/schemas/auth";
+import { register } from "@/api/auth";
 
 const Register = () => {
-  const form = useForm<FormFields>({
-    resolver: zodResolver(schema),
+  const form = useForm<RegisterFormFields>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -49,26 +36,15 @@ const Register = () => {
   const navigate = useNavigate();
   const navToLogin = () => navigate("/");
 
-  const onSubmit = async (data: FormFields) => {
+  const onSubmit = async (data: RegisterFormFields) => {
     try {
-      const response = await fetch("http://localhost:3003/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
+      const result = await register(data);
+      console.log(result);
+      if (!result.ok) {
+        const errorData = await result.json();
         toast.error(errorData.error || "Registration failed");
         return;
       }
-
       toast.success("Registration successful! You can now sign in.");
       form.reset();
       navToLogin();

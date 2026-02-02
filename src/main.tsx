@@ -4,13 +4,16 @@ import { BrowserRouter } from "react-router-dom";
 import "./global.css";
 import { SidebarProvider } from "./components/ui/sidebar.tsx";
 import App from "./App.tsx";
+import AuthProvider from "./components/auth/AuthProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SidebarProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </SidebarProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SidebarProvider>
+    </AuthProvider>
   </StrictMode>,
 );
