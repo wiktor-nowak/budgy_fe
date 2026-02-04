@@ -33,9 +33,12 @@ import {
 } from "@/components/ui/collapsible";
 import { Link } from "react-router-dom";
 import { getMyAccounts, type Account } from "@/api/accounts";
+import { THEME_STORAGE_KEY } from "@/lib/constants";
+import { useTheme } from "@/hooks/use-theme";
+import { ThemeValues } from "../theme/ThemeContext";
 
 const SideBar = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { setTheme } = useTheme();
   const [myAccounts, setMyAccounts] = useState<Account[]>([]);
 
   useEffect(() => {
@@ -51,17 +54,20 @@ const SideBar = () => {
     fetchAccounts();
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
+    const currentTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (
+      currentTheme === ThemeValues.SYSTEM ||
+      currentTheme === ThemeValues.LIGHT
+    ) {
+      setTheme(ThemeValues.DARK);
+    } else {
+      setTheme(ThemeValues.LIGHT);
+    }
   };
+
+  const isDarkTheme = () =>
+    localStorage.getItem(THEME_STORAGE_KEY) === ThemeValues.DARK;
 
   const handleLogout = () => {};
 
@@ -173,8 +179,8 @@ const SideBar = () => {
                 onClick={toggleDarkMode}
                 className="cursor-pointer"
               >
-                {isDarkMode ? <FiSun /> : <FiMoon />}
-                {isDarkMode ? "Light Mode" : "Dark Mode"}
+                {isDarkTheme() ? <FiSun /> : <FiMoon />}
+                {isDarkTheme() ? "Light Mode" : "Dark Mode"}
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>

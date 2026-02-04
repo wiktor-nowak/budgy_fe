@@ -166,7 +166,7 @@ const AddCategoryForm = ({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" variant="outline" className="w-full">
               {categoryToEdit ? "Update Category" : "Add Category"}
             </Button>
           </form>

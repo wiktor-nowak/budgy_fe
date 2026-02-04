@@ -74,7 +74,7 @@ const AccountsList = ({
                       variant="ghost"
                       size="icon"
                       onClick={() => removeAccount(account.id)}
-                      disabled={account.isMainAccount}
+                      disabled={false}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

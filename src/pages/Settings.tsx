@@ -51,7 +51,7 @@ const settingsSchema = z
     {
       message: "Old password is required to set a new password",
       path: ["oldPassword"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -63,7 +63,7 @@ const settingsSchema = z
     {
       message: "New password must be at least 8 characters long",
       path: ["newPassword"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -75,7 +75,7 @@ const settingsSchema = z
     {
       message: "New passwords do not match",
       path: ["confirmNewPassword"],
-    }
+    },
   );
 
 type SettingsFormFields = z.infer<typeof settingsSchema>;
@@ -102,11 +102,8 @@ const Settings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fetchedUser, fetchedAccounts, fetchedMainAccountId] = await Promise.all([
-          getMe(),
-          getMyAccounts(),
-          getMainAccount(),
-        ]);
+        const [fetchedUser, fetchedAccounts, fetchedMainAccountId] =
+          await Promise.all([getMe(), getMyAccounts(), getMainAccount()]);
         setUser(fetchedUser);
         setAccounts(fetchedAccounts);
         setMainAccountId(fetchedMainAccountId);
@@ -166,7 +163,7 @@ const Settings = () => {
       });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "An unknown error occurred"
+        error instanceof Error ? error.message : "An unknown error occurred",
       );
       console.error(error);
     }
@@ -176,7 +173,9 @@ const Settings = () => {
     <Card className="mx-auto max-w-2xl">
       <CardHeader>
         <CardTitle className="text-xl">Manage Settings</CardTitle>
-        <CardDescription>Update your profile and account settings</CardDescription>
+        <CardDescription>
+          Update your profile and account settings
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -308,7 +307,7 @@ const Settings = () => {
                 )}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" variant="outline">
               Change settings
             </Button>
           </form>

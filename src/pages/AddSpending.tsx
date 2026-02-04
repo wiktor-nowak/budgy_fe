@@ -86,7 +86,7 @@ const AddSpending = () => {
       toast.success("Spending added successfully!");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "An unknown error occurred"
+        error instanceof Error ? error.message : "An unknown error occurred",
       );
       console.error(error);
     }
@@ -183,7 +183,7 @@ const AddSpending = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" variant="outline">
               Add Spending
             </Button>
           </form>

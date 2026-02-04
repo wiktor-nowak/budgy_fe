@@ -16,31 +16,34 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { Suspense } from "react";
 import { Spinner } from "./components/ui/spinner";
+import { ThemeProvider } from "./components/theme/ThemeProvider";
 
 function App() {
   return (
     <Suspense fallback={<Spinner className="size-20 text-green-500" />}>
-      <Routes>
-        {}
-        <Route element={<Outside />}>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/spendings" element={<MonthlySpendings />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/charts" element={<Charts />} />
-            <Route path="/manage-accounts" element={<ManageAccounts />} />
-            <Route path="/add-spending" element={<AddSpending />} />
-            <Route path="/test" element={<TestPage />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/account/:id" element={<Account />} />
-            <Route path="/categories" element={<Categories />} />
+      <ThemeProvider defaultTheme="dark">
+        <Routes>
+          {}
+          <Route element={<Outside />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Route>
-        </Route>
-      </Routes>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/spendings" element={<MonthlySpendings />} />
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/charts" element={<Charts />} />
+              <Route path="/manage-accounts" element={<ManageAccounts />} />
+              <Route path="/add-spending" element={<AddSpending />} />
+              <Route path="/test" element={<TestPage />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/account/:id" element={<Account />} />
+              <Route path="/categories" element={<Categories />} />
+            </Route>
+          </Route>
+        </Routes>
+      </ThemeProvider>
     </Suspense>
   );
 }

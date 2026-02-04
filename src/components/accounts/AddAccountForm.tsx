@@ -183,7 +183,7 @@ const AddAccountForm = ({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" variant="outline">
               {accountToEdit ? "Update Account" : "Add Account"}
             </Button>
           </form>

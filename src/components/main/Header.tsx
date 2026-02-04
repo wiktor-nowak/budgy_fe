@@ -1,5 +1,6 @@
 import { FiSearch, FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const Header = () => {
   return (
@@ -16,10 +17,10 @@ const Header = () => {
       </div>
       <div className="flex items-center space-x-4 px-4 pl-8">
         <Link to="/add-spending">
-          <button className="bg-grassgreen text-dark py-2 px-4 rounded-lg font-semibold flex items-center cursor-pointer">
-            <FiPlus className="mr-2" />
+          <Button variant="ghost" size="lg">
+            <FiPlus />
             ADD NEW
-          </button>
+          </Button>
         </Link>
       </div>
     </header>
