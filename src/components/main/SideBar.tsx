@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   FiShoppingCart,
   FiBarChart2,
@@ -31,15 +31,21 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyAccounts, type Account } from "@/lib/api/accounts";
 import { THEME_STORAGE_KEY } from "@/lib/constants";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { ThemeValues } from "../theme/ThemeContext";
+import { AuthContext } from "@/lib/context/auth-context";
+import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
+import { logout } from "@/lib/api/auth";
+import { toast } from "sonner";
 
-const SideBar = () => {
+export const SideBar = () => {
   const { setTheme } = useTheme();
+  const navigate = useNavigate();
   const [myAccounts, setMyAccounts] = useState<Account[]>([]);
+  const authBundle = useContext(AuthContext);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -69,7 +75,14 @@ const SideBar = () => {
   const isDarkTheme = () =>
     localStorage.getItem(THEME_STORAGE_KEY) === ThemeValues.DARK;
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    const response = await logout();
+    if (response?.status === 204) {
+      toast.success("Logged out successfully!");
+    }
+    authBundle?.logout();
+    navigate("/login");
+  };
 
   return (
     <Sidebar collapsible="offcanvas" variant="inset">
@@ -198,5 +211,3 @@ const SideBar = () => {
     </Sidebar>
   );
 };
-
-export default SideBar;

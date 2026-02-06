@@ -2,7 +2,7 @@ import type { LoginFormFields, RegisterFormFields } from "@/schemas/auth";
 import { apiClient } from "./apiClient";
 import { throwErrorWithMessage } from "../errors/apiErrors";
 
-export async function getAccessToken() {
+export async function refresh() {
   try {
     return await apiClient.post("/auth/refresh"); //CZY TO POWINNO BYĆ withCredentials?! NIE BO MAM W AXIOS CLIENT
   } catch (error) {
@@ -15,6 +15,14 @@ export async function login(loginData: LoginFormFields) {
     return await apiClient.post("/auth/login", loginData);
   } catch (error) {
     throwErrorWithMessage(error, "Login failed!");
+  }
+}
+
+export async function logout() {
+  try {
+    return await apiClient.post("/auth/logout");
+  } catch (error) {
+    throwErrorWithMessage(error, "There is no such route!");
   }
 }
 
