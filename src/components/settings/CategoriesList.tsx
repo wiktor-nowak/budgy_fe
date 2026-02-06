@@ -14,7 +14,7 @@ import {
   getCategories,
   getCategory,
   type Category,
-} from "@/api/categories";
+} from "@/lib/api/categories";
 
 interface CategoriesListProps {
   categoryToEdit: Category | null;

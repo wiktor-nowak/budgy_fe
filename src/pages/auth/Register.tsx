@@ -20,7 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { registerSchema, type RegisterFormFields } from "@/schemas/auth";
-import { register } from "@/api/auth";
+import { register } from "@/lib/api/auth";
+import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
 
 const Register = () => {
   const form = useForm<RegisterFormFields>({
@@ -34,23 +35,20 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
-  const navToLogin = () => navigate("/");
 
   const onSubmit = async (data: RegisterFormFields) => {
     try {
-      const result = await register(data);
-      console.log(result);
-      if (!result.ok) {
-        const errorData = await result.json();
-        toast.error(errorData.error || "Registration failed");
-        return;
-      }
-      toast.success("Registration successful! You can now sign in.");
+      const registerData = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      };
+      const response = await register(registerData);
       form.reset();
-      navToLogin();
+      toast.success(response?.data.message);
+      navigate("/login");
     } catch (error) {
-      toast.error("Registration failed");
-      console.error(error);
+      toastErrorWithMessage(error, "Login failed.");
     }
   };
 
@@ -120,7 +118,11 @@ const Register = () => {
             <Button type="submit" className="w-full">
               Create an account
             </Button>
-            <Button variant="outline" className="w-full" onClick={navToLogin}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/login")}
+            >
               Sign in
             </Button>
           </form>

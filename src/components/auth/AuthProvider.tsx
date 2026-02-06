@@ -1,34 +1,31 @@
-import { AuthContext } from "@/lib/auth";
-import { useEffect, useState, type ReactNode } from "react";
+import { tokenStore } from "@/lib/api/tokenStore";
+import { useAccessToken } from "@/lib/hooks/use-access-token";
+import { AuthContext, type AuthContextValue } from "@/lib/context/auth-context";
+import { queryClient } from "@/lib/query/queryClient";
+
+import { type ReactNode } from "react";
 
 type LayoutProps = {
   children: ReactNode;
 };
 
 export default function AuthProvider({ children }: LayoutProps) {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const { data, isLoading, error } = useAccessToken();
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URI}/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data.accessToken) {
-          setAccessToken(data.accessToken);
-        }
-      })
-      .catch((error) => {
-        throw new Error("!!! ", error);
-      });
-  });
+  const logout = () => {
+    tokenStore.clear();
+    queryClient.clear();
+  };
+
+  const value: AuthContextValue = {
+    isAuthenticated: !!data && !error,
+    isLoading,
+    logout,
+  };
 
   return (
     <>
-      <AuthContext value={{ accessToken, setAccessToken }}>
-        {children}
-      </AuthContext>
+      <AuthContext value={value}>{children}</AuthContext>
     </>
   );
 }

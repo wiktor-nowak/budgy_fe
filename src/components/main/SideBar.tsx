@@ -32,9 +32,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Link } from "react-router-dom";
-import { getMyAccounts, type Account } from "@/api/accounts";
+import { getMyAccounts, type Account } from "@/lib/api/accounts";
 import { THEME_STORAGE_KEY } from "@/lib/constants";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme } from "@/lib/hooks/use-theme";
 import { ThemeValues } from "../theme/ThemeContext";
 
 const SideBar = () => {

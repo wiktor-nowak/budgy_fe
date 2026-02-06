@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getExpenseMonths } from "../api/expenses";
+import { getExpenseMonths } from "../lib/api/expenses";
 import {
   Tabs,
   TabsContent,

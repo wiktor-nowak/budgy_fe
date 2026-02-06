@@ -1,24 +1,24 @@
-import AddAccountForm from "../components/accounts/AddAccountForm";
-import AccountsList from "../components/accounts/AccountsList";
-import { useEffect, useState } from "react";
-import { type Account, getMyAccounts } from "@/api/accounts";
+// import AddAccountForm from "../components/accounts/AddAccountForm";
+// import AccountsList from "../components/accounts/AccountsList";
+// import { useEffect, useState } from "react";
+// import { type Account, getMyAccounts } from "@/lib/api/accounts";
 
 const ManageAccounts = () => {
-  const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  // const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
+  // const [accounts, setAccounts] = useState<Account[]>([]);
 
-  const fetchAccounts = async () => {
-    const myAccounts = await getMyAccounts();
-    setAccounts(myAccounts);
-  };
+  // const fetchAccounts = async () => {
+  //   const myAccounts = await getMyAccounts();
+  //   setAccounts(myAccounts);
+  // };
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+  // useEffect(() => {
+  //   fetchAccounts();
+  // }, []);
 
   return (
     <div>
-      <AddAccountForm
+      {/* <AddAccountForm
         accountToEdit={accountToEdit}
         setAccountToEdit={setAccountToEdit}
         isFirstAccount={accounts.length === 0}
@@ -29,7 +29,7 @@ const ManageAccounts = () => {
         accountToEdit={accountToEdit}
         accounts={accounts}
         refetchAccounts={fetchAccounts}
-      />
+      /> */}
     </div>
   );
 };

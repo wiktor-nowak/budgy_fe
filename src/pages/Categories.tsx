@@ -1,4 +1,4 @@
-import type { Category } from "@/api/categories";
+import type { Category } from "@/lib/api/categories";
 import AddCategoryForm from "../components/settings/AddCategoryForm";
 import CategoriesList from "../components/settings/CategoriesList";
 import { useState } from "react";

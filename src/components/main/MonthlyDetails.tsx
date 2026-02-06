@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMonthlySummary } from "../../api/expenses";
+import { getMonthlySummary } from "../../lib/api/expenses";
 import MonthlyTable from "./MonthlyTable";
 import MonthlyChart from "./MonthlyChart";
 

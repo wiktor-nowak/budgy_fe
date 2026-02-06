@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
-import { updateCategory, type Category } from "@/api/categories";
+import { updateCategory, type Category } from "@/lib/api/categories";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),

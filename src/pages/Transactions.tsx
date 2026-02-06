@@ -1,7 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
-import { getExpenses, updateExpense, type ExpenseData, type ExpenseUpdateData } from "@/api/expenses";
-import { getCategories, type Category } from "@/api/categories";
-import { getMyAccounts, type Account } from "@/api/accounts";
+import {
+  getExpenses,
+  updateExpense,
+  type ExpenseData,
+  type ExpenseUpdateData,
+} from "@/lib/api/expenses";
+import { getCategories, type Category } from "@/lib/api/categories";
+import { getMyAccounts, type Account } from "@/lib/api/accounts";
 import { toast } from "sonner";
 import {
   Table,
@@ -85,7 +90,9 @@ const Transactions = () => {
             <Fragment key={transaction.id}>
               <TableRow
                 className={`border-b border-bg dark:border-dark-bg ${
-                  openRowId === transaction.id ? "text-gray-400 dark:text-gray-500" : ""
+                  openRowId === transaction.id
+                    ? "text-gray-400 dark:text-gray-500"
+                    : ""
                 }`}
               >
                 <TableCell className="p-2">
@@ -113,7 +120,9 @@ const Transactions = () => {
                 </TableCell>
                 <TableCell className="p-2">
                   {transaction.description?.substring(0, 50) || ""}
-                  {transaction.description && transaction.description.length > 50 && "..."}
+                  {transaction.description &&
+                    transaction.description.length > 50 &&
+                    "..."}
                 </TableCell>
                 <TableCell className="p-2 text-right">
                   <FiEdit

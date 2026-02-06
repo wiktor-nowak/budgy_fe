@@ -1,9 +1,13 @@
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { getCategories, type Category } from "@/api/categories";
-import { getMyAccounts, getMainAccount, type Account } from "@/api/accounts";
-import { addExpense } from "@/api/expenses";
+import { type Category } from "@/lib/api/categories";
+// import {
+//   getMyAccounts,
+//   getMainAccount,
+//   type Account,
+// } from "@/lib/api/accounts";
+import { addExpense } from "@/lib/api/expenses";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -43,8 +47,8 @@ type SpendingFormFields = z.infer<typeof spendingSchema>;
 
 const AddSpending = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [mainAccount, setMainAccount] = useState<string>("");
+  // const [accounts, setAccounts] = useState<Account[]>([]);
+  // const [mainAccount, setMainAccount] = useState<string>("");
 
   const form = useForm<SpendingFormFields>({
     resolver: zodResolver(spendingSchema) as Resolver<SpendingFormFields>,
@@ -57,32 +61,36 @@ const AddSpending = () => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [fetchedCategories, fetchedAccounts, mainAccountId] =
-          await Promise.all([
-            getCategories(),
-            getMyAccounts(),
-            getMainAccount(),
-          ]);
-        setCategories(fetchedCategories);
-        setAccounts(fetchedAccounts);
-        setMainAccount(mainAccountId);
-        form.setValue("accountId", mainAccountId);
-      } catch (error) {
-        toast.error("Failed to fetch data for AddSpending page");
-        console.error("Failed to fetch data for AddSpending page", error);
-      }
-    };
-
-    fetchData();
+    setCategories([]);
   }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [fetchedCategories, fetchedAccounts, mainAccountId] =
+  //         await Promise.all([
+  //           getCategories(),
+  //           // getMyAccounts(),
+  //           // getMainAccount(),
+  //         ]);
+  //       setCategories(fetchedCategories);
+  //       setAccounts(fetchedAccounts);
+  //       setMainAccount(mainAccountId);
+  //       form.setValue("accountId", mainAccountId);
+  //     } catch (error) {
+  //       toast.error("Failed to fetch data for AddSpending page");
+  //       console.error("Failed to fetch data for AddSpending page", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const onSubmit = async (data: SpendingFormFields) => {
     try {
       await addExpense(data);
       form.reset();
-      form.setValue("accountId", mainAccount);
+      // form.setValue("accountId", mainAccount);
       toast.success("Spending added successfully!");
     } catch (error) {
       toast.error(
@@ -91,6 +99,11 @@ const AddSpending = () => {
       console.error(error);
     }
   };
+
+  interface DummyAccType {
+    id: string;
+    name: string;
+  }
 
   return (
     <Card className="mx-auto max-w-2xl">
@@ -115,7 +128,7 @@ const AddSpending = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {accounts.map((account) => (
+                        {[].map((account: DummyAccType) => (
                           <SelectItem
                             key={account.id}
                             value={String(account.id)}

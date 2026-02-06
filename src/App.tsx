@@ -8,7 +8,7 @@ import ManageAccounts from "./pages/ManageAccounts";
 import AddSpending from "./pages/AddSpending";
 import TestPage from "./pages/TestPage";
 import Settings from "./pages/Settings";
-import Account from "./pages/Account";
+// import Account from "./pages/Account";
 import Layout from "./layout/Layout";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import Categories from "./pages/Categories";
@@ -25,12 +25,12 @@ function App() {
         <Routes>
           {}
           <Route element={<Outside />}>
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
-              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/spendings" element={<MonthlySpendings />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/charts" element={<Charts />} />
@@ -38,7 +38,7 @@ function App() {
               <Route path="/add-spending" element={<AddSpending />} />
               <Route path="/test" element={<TestPage />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/account/:id" element={<Account />} />
+              {/* <Route path="/account/:id" element={<Account />} /> */}
               <Route path="/categories" element={<Categories />} />
             </Route>
           </Route>

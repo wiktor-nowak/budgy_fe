@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -19,10 +18,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-// import { getMyAccounts } from "@/api/accounts";
 import { loginSchema, type LoginFormFields } from "@/schemas/auth";
-import { login } from "@/api/auth";
-import { useAuth } from "@/lib/auth";
+import { login } from "@/lib/api/auth";
+import { tokenStore } from "@/lib/api/tokenStore";
+import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
 
 const Login = () => {
   const form = useForm<LoginFormFields>({
@@ -33,20 +32,14 @@ const Login = () => {
     },
   });
   const navigate = useNavigate();
-  const { setAccessToken } = useAuth();
-
-  const navToRegister = () => navigate("/register");
-  const navToHome = () => navigate("/home");
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
-      const result = await login(data);
-      console.log(result);
-      setAccessToken(result.token);
-      navToHome();
+      const response = await login(data);
+      tokenStore.set(response?.data.accessToken);
+      navigate("/");
     } catch (error) {
-      toast.error("Login failed");
-      console.log(error);
+      toastErrorWithMessage(error, "Login failed.");
     }
   };
 
@@ -101,7 +94,7 @@ const Login = () => {
             <Button
               variant="outline"
               className="w-full"
-              onClick={navToRegister}
+              onClick={() => navigate("/register")}
             >
               Sign up
             </Button>

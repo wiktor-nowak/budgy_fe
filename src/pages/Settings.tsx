@@ -27,8 +27,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { getMe, updateUser, changePassword, type User } from "@/api/users";
-import { getMyAccounts, getMainAccount, type Account } from "@/api/accounts";
+import { getMe, updateUser, changePassword, type User } from "@/lib/api/users";
+// import {
+//   getMyAccounts,
+//   getMainAccount,
+//   type Account,
+// } from "@/lib/api/accounts";
 
 const settingsSchema = z
   .object({
@@ -82,8 +86,8 @@ type SettingsFormFields = z.infer<typeof settingsSchema>;
 
 const Settings = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [mainAccountId, setMainAccountId] = useState<string>("");
+  // const [accounts, setAccounts] = useState<Account[]>([]);
+  // const [mainAccountId, setMainAccountId] = useState<string>("");
 
   const form = useForm<SettingsFormFields>({
     resolver: zodResolver(settingsSchema) as Resolver<SettingsFormFields>,
@@ -102,18 +106,17 @@ const Settings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fetchedUser, fetchedAccounts, fetchedMainAccountId] =
-          await Promise.all([getMe(), getMyAccounts(), getMainAccount()]);
+        const [fetchedUser] = await Promise.all([getMe()]);
         setUser(fetchedUser);
-        setAccounts(fetchedAccounts);
-        setMainAccountId(fetchedMainAccountId);
+        // setAccounts(fetchedAccounts);
+        // setMainAccountId(fetchedMainAccountId);
 
         form.reset({
           username: fetchedUser.username,
           email: fetchedUser.email,
           name: fetchedUser.name || "",
           surname: fetchedUser.surname || "",
-          mainAccountId: fetchedMainAccountId,
+          mainAccountId: "",
           oldPassword: "",
           newPassword: "",
           confirmNewPassword: "",
@@ -145,7 +148,7 @@ const Settings = () => {
       }
 
       // Update main account if changed
-      if (data.mainAccountId !== mainAccountId) {
+      if (data.mainAccountId !== "") {
         // Logic to update main account in backend
         // This would involve a PATCH request to the account endpoint
         // to set isMainAccount to true for the new main account
@@ -168,6 +171,11 @@ const Settings = () => {
       console.error(error);
     }
   };
+
+  interface DummyAccType {
+    id: string;
+    name: string;
+  }
 
   return (
     <Card className="mx-auto max-w-2xl">
@@ -250,7 +258,7 @@ const Settings = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {accounts.map((account) => (
+                        {[].map((account: DummyAccType) => (
                           <SelectItem
                             key={account.id}
                             value={String(account.id)}

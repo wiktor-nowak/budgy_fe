@@ -1,9 +1,9 @@
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { type Category } from "@/api/categories";
-import { type Account } from "@/api/accounts";
-import { type ExpenseUpdateData } from "@/api/expenses";
+import { type Category } from "@/lib/api/categories";
+import { type Account } from "@/lib/api/accounts";
+import { type ExpenseUpdateData } from "@/lib/api/expenses";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
