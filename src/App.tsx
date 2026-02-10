@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Outside from "./pages/Outside";
+import Unprotected from "./pages/Unprotected";
 import MonthlySpendings from "./pages/MonthlySpendings";
 import Transactions from "./pages/Transactions";
 import Charts from "./pages/Charts";
@@ -17,16 +17,17 @@ import Register from "./pages/auth/Register";
 import { Suspense } from "react";
 import { Spinner } from "./components/ui/spinner";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
+import Verified from "./pages/auth/Verified";
 
 function App() {
   return (
     <Suspense fallback={<Spinner className="size-20 text-green-500" />}>
       <ThemeProvider defaultTheme="dark">
         <Routes>
-          {}
-          <Route element={<Outside />}>
+          <Route element={<Unprotected />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verified" element={<Verified />} />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>

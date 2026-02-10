@@ -1,4 +1,8 @@
-import type { LoginFormFields, RegisterFormFields } from "@/schemas/auth";
+import type {
+  LoginFormFields,
+  RegisterFormFields,
+  ValidateEmailFormFields,
+} from "@/schemas/auth";
 import { apiClient } from "./apiClient";
 import { throwErrorWithMessage } from "../errors/apiErrors";
 
@@ -33,5 +37,13 @@ export async function register(
     return await apiClient.post("/users", registerData);
   } catch (error) {
     throwErrorWithMessage(error, "Registration failed!");
+  }
+}
+
+export async function verifyEmail(data: ValidateEmailFormFields) {
+  try {
+    return await apiClient.post("/auth/verify-email", data);
+  } catch (error) {
+    throwErrorWithMessage(error, "Veryfication retry failed!");
   }
 }

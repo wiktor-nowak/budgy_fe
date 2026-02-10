@@ -1,4 +1,4 @@
-import SideBar from "../components/main/SideBar";
+// import SideBar from "../components/main/SideBar";
 import Header from "../components/main/Header";
 import Footer from "../components/main/Footer";
 import { Outlet } from "react-router-dom";
@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 const Layout = () => {
   return (
     <>
-      <SideBar />
+      {/* <SideBar /> */}
       <SidebarInset className="rounded-xl overflow-hidden">
         <Header />
         <main className="flex-1 p-4">

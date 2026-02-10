@@ -6,6 +6,11 @@ export const loginSchema = z.object({
   password: z.string().min(8),
 });
 
+// TODO Password check is done twice, on frontend and on backend!
+export const validateEmailSchema = z.object({
+  email: z.string().email(),
+});
+
 export const registerSchema = z
   .object({
     username: z.string().min(3),
@@ -20,3 +25,4 @@ export const registerSchema = z
 
 export type LoginFormFields = z.infer<typeof loginSchema>;
 export type RegisterFormFields = z.infer<typeof registerSchema>;
+export type ValidateEmailFormFields = z.infer<typeof validateEmailSchema>;

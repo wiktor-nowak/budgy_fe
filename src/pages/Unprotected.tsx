@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-const Outside = () => {
+const Unprotected = () => {
   return (
     <main className="w-full max-w-md mx-auto flex flex-col justify-center">
       <Outlet />
@@ -8,4 +8,4 @@ const Outside = () => {
   );
 };
 
-export default Outside;
+export default Unprotected;

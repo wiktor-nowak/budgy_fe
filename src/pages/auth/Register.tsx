@@ -45,8 +45,10 @@ const Register = () => {
       };
       const response = await register(registerData);
       form.reset();
-      toast.success(response?.data.message);
-      navigate("/login");
+      if (response?.status === 201) {
+        toast.success("User successfully created!");
+        navigate("/login");
+      }
     } catch (error) {
       toastErrorWithMessage(error, "Login failed.");
     }
