@@ -1,36 +1,75 @@
 // import AddAccountForm from "../components/accounts/AddAccountForm";
-// import AccountsList from "../components/accounts/AccountsList";
-// import { useEffect, useState } from "react";
-// import { type Account, getMyAccounts } from "@/lib/api/accounts";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { FilePenLine, Trash2 } from "lucide-react";
+import { useAccounts } from "@/lib/hooks/accounts";
+import type { CreateAccountFormType } from "@/schemas/accounts";
 
 const ManageAccounts = () => {
-  // const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
-  // const [accounts, setAccounts] = useState<Account[]>([]);
-
-  // const fetchAccounts = async () => {
-  //   const myAccounts = await getMyAccounts();
-  //   setAccounts(myAccounts);
-  // };
-
-  // useEffect(() => {
-  //   fetchAccounts();
-  // }, []);
+  const { data: accounts, isLoading } = useAccounts();
+  function handleEdit() {}
+  function removeAccount() {}
 
   return (
-    <div>
-      {/* <AddAccountForm
-        accountToEdit={accountToEdit}
-        setAccountToEdit={setAccountToEdit}
-        isFirstAccount={accounts.length === 0}
-        refetchAccounts={fetchAccounts}
-      />
-      <AccountsList
-        setAccountToEdit={setAccountToEdit}
-        accountToEdit={accountToEdit}
-        accounts={accounts}
-        refetchAccounts={fetchAccounts}
-      /> */}
-    </div>
+    <>
+      {/* <AddAccountForm /> */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Accounts</h2>
+        {!isLoading ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">Name</TableHead>
+                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead className="w-[100px]">Balance</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="text-right"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {!isLoading &&
+                accounts &&
+                accounts.map((account: CreateAccountFormType) => (
+                  <TableRow key={account.name}>
+                    <TableCell>{account.name}</TableCell>
+                    <TableCell>{account.type}</TableCell>
+                    <TableCell>{account.balance as number}</TableCell>
+                    <TableCell>{account.description}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit()}
+                        >
+                          <FilePenLine className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeAccount()}
+                          disabled={false}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p>No accounts.</p>
+        )}
+      </div>
+    </>
   );
 };
 

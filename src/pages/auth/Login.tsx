@@ -19,9 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, type LoginFormFields } from "@/schemas/auth";
-import { login } from "@/lib/api/auth";
-import { tokenStore } from "@/lib/api/tokenStore";
 import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
+import { useLogin } from "@/lib/hooks/auth";
 
 const Login = () => {
   const form = useForm<LoginFormFields>({
@@ -31,16 +30,18 @@ const Login = () => {
       password: "",
     },
   });
+  const { mutate } = useLogin();
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormFields) => {
-    try {
-      const response = await login(data);
-      tokenStore.set(response?.data.accessToken);
-      navigate("/");
-    } catch (error) {
-      toastErrorWithMessage(error, "Login failed.");
-    }
+    mutate(data, {
+      onSuccess: () => {
+        navigate("/");
+      },
+      onError: (error) => {
+        toastErrorWithMessage(error, "Login failed.");
+      },
+    });
   };
 
   return (

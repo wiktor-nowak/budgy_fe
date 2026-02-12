@@ -1,4 +1,4 @@
-import type { ACCOUNT_TYPES_UNION } from "@/lib/types";
+import type { ACCOUNT_TYPES } from "../types";
 
 const API_EXPENSES = "http://localhost:3003/api/expenses";
 
@@ -8,7 +8,7 @@ export interface ExpenseData {
   createdAt: string;
   shared: boolean;
   description?: string;
-  account: { type: ACCOUNT_TYPES_UNION };
+  account: { type: ACCOUNT_TYPES };
   category: { name: string };
   accountId: string;
   categoryId: string;
@@ -38,7 +38,7 @@ export const getExpenses = async (): Promise<ExpenseData[]> => {
 };
 
 export const addExpense = async (
-  expenseData: Omit<ExpenseUpdateData, "id">
+  expenseData: Omit<ExpenseUpdateData, "id">,
 ) => {
   const token = localStorage.getItem("token");
   const response = await fetch(API_EXPENSES, {
@@ -61,7 +61,7 @@ export const addExpense = async (
 
 export const updateExpense = async (
   id: string,
-  expenseData: ExpenseUpdateData
+  expenseData: ExpenseUpdateData,
 ) => {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_EXPENSES}/${id}`, {
@@ -112,7 +112,7 @@ export const getExpenseMonths = async (): Promise<
 
 export const getMonthlySummary = async (
   year: number,
-  month: number
+  month: number,
 ): Promise<unknown[]> => {
   const token = localStorage.getItem("token");
   const response = await fetch(
@@ -121,7 +121,7 @@ export const getMonthlySummary = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
   if (!response.ok) {

@@ -1,72 +1,70 @@
-import { Fragment, useEffect, useState } from "react";
-import {
-  getExpenses,
-  updateExpense,
-  type ExpenseData,
-  type ExpenseUpdateData,
-} from "@/lib/api/expenses";
-import { getCategories, type Category } from "@/lib/api/categories";
-import { getMyAccounts, type Account } from "@/lib/api/accounts";
-import { toast } from "sonner";
+// import { Fragment, useEffect, useState } from "react";
+// import {
+//   getExpenses,
+//   updateExpense,
+//   type ExpenseData,
+//   type ExpenseUpdateData,
+// } from "@/lib/api/expenses";
+// import { getCategories, type Category } from "@/lib/api/categories";
+// import { toast } from "sonner";
 import {
   Table,
-  TableBody,
-  TableCell,
+  // TableBody,
+  // TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  FiCreditCard,
-  FiDollarSign,
-  FiCheck,
-  FiX,
-  FiEdit,
-} from "react-icons/fi";
-import ExpenseForm from "@/components/forms/ExpenseForm";
+// import {
+//   FiCreditCard,
+//   FiDollarSign,
+//   FiCheck,
+//   FiX,
+//   FiEdit,
+// } from "react-icons/fi";
+// import ExpenseForm from "@/components/forms/ExpenseForm";
 
 const Transactions = () => {
-  const [transactions, setTransactions] = useState<ExpenseData[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [openRowId, setOpenRowId] = useState<string | null>(null);
+  // const [transactions, setTransactions] = useState<ExpenseData[]>([]);
+  // // const [accounts, setAccounts] = useState<Account[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
+  // const [openRowId, setOpenRowId] = useState<string | null>(null);
 
-  const fetchData = async () => {
-    try {
-      const [expenseData, accountsData, categoriesData] = await Promise.all([
-        getExpenses(),
-        getMyAccounts(),
-        getCategories(),
-      ]);
-      setTransactions(expenseData);
-      setAccounts(accountsData);
-      setCategories(categoriesData);
-    } catch (err) {
-      toast.error("Failed to fetch transaction data.");
-      console.error(err);
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     const [expenseData, categoriesData] = await Promise.all([
+  //       getExpenses(),
+  //       getCategories(),
+  //     ]);
+  //     setTransactions(expenseData);
+  //     // setAccounts(accountsData);
+  //     setCategories(categoriesData);
+  //   } catch (err) {
+  //     toast.error("Failed to fetch transaction data.");
+  //     console.error(err);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
-  const handleToggleEdit = (id: string) => {
-    setOpenRowId(openRowId === id ? null : id);
-  };
+  // const handleToggleEdit = (id: string) => {
+  //   setOpenRowId(openRowId === id ? null : id);
+  // };
 
-  const handleUpdateExpense = async (data: ExpenseUpdateData) => {
-    if (!openRowId) return;
-    try {
-      await updateExpense(openRowId, data);
-      setOpenRowId(null);
-      toast.success("Expense updated successfully!");
-      fetchData(); // Refresh data after update
-    } catch (error) {
-      console.error("Failed to update expense", error);
-      toast.error("Failed to update expense.");
-    }
-  };
+  // const handleUpdateExpense = async (data: ExpenseUpdateData) => {
+  //   if (!openRowId) return;
+  //   try {
+  //     await updateExpense(openRowId, data);
+  //     setOpenRowId(null);
+  //     toast.success("Expense updated successfully!");
+  //     fetchData(); // Refresh data after update
+  //   } catch (error) {
+  //     console.error("Failed to update expense", error);
+  //     toast.error("Failed to update expense.");
+  //   }
+  // };
 
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg">
@@ -85,7 +83,7 @@ const Transactions = () => {
             <TableHead className="p-2"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        {/* <TableBody>
           {transactions.map((transaction) => (
             <Fragment key={transaction.id}>
               <TableRow
@@ -137,7 +135,6 @@ const Transactions = () => {
                     <div>
                       <ExpenseForm
                         expense={transaction}
-                        accounts={accounts}
                         categories={categories}
                         onSave={handleUpdateExpense}
                         onCancel={() => setOpenRowId(null)}
@@ -148,7 +145,7 @@ const Transactions = () => {
               )}
             </Fragment>
           ))}
-        </TableBody>
+        </TableBody> */}
       </Table>
     </div>
   );

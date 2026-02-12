@@ -1,6 +1,7 @@
-const API_USERS = "http://localhost:3003/api/users";
-const API_AUTH = "http://localhost:3003/api/auth";
+import { apiClient } from "./apiClient";
 
+const API_AUTH = "http://localhost:3003/auth";
+const API_USERS = "http://localhost:3003/users";
 export interface User {
   id: string;
   username: string;
@@ -9,18 +10,11 @@ export interface User {
   surname?: string;
 }
 
-export const getUsers = async (): Promise<User[]> => {
-  const response = await fetch(API_USERS);
+export async function getAllUsers() {
+  return await apiClient.get("/accounts/all");
+}
 
-  if (!response.ok) {
-    throw new Error("Could not fetch users!");
-  }
-
-  const data = await response.json();
-  return data.response;
-};
-
-export const getMe = async (): Promise<User> => {
+export async function getMe(): Promise<User> {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_AUTH}/me`, {
     headers: {
@@ -34,9 +28,9 @@ export const getMe = async (): Promise<User> => {
 
   const data = await response.json();
   return data.response;
-};
+}
 
-export const updateUser = async (id: string, data: Partial<User>) => {
+export async function updateUser(id: string, data: Partial<User>) {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_USERS}/${id}`, {
     method: "PATCH",
@@ -52,13 +46,13 @@ export const updateUser = async (id: string, data: Partial<User>) => {
   }
   const responseData = await response.json();
   console.log(responseData.message);
-};
+}
 
-export const changePassword = async (
+export async function changePassword(
   id: string,
   oldPassword: string,
-  newPassword: string
-) => {
+  newPassword: string,
+) {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_USERS}/${id}/password`, {
     method: "PATCH",
@@ -74,4 +68,4 @@ export const changePassword = async (
   }
   const responseData = await response.json();
   console.log(responseData.message);
-};
+}

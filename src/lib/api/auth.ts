@@ -4,46 +4,25 @@ import type {
   ValidateEmailFormFields,
 } from "@/schemas/auth";
 import { apiClient } from "./apiClient";
-import { throwErrorWithMessage } from "../errors/apiErrors";
 
 export async function refresh() {
-  try {
-    return await apiClient.post("/auth/refresh"); //CZY TO POWINNO BYĆ withCredentials?! NIE BO MAM W AXIOS CLIENT
-  } catch (error) {
-    throwErrorWithMessage(error, "Refresh failed!");
-  }
+  return await apiClient.post("/auth/refresh"); //CZY TO POWINNO BYĆ withCredentials?! NIE BO MAM W AXIOS CLIENT
 }
 
 export async function login(loginData: LoginFormFields) {
-  try {
-    return await apiClient.post("/auth/login", loginData);
-  } catch (error) {
-    throwErrorWithMessage(error, "Login failed!");
-  }
+  return await apiClient.post("/auth/login", loginData);
 }
 
 export async function logout() {
-  try {
-    return await apiClient.post("/auth/logout");
-  } catch (error) {
-    throwErrorWithMessage(error, "There is no such route!");
-  }
+  return await apiClient.post("/auth/logout");
 }
 
 export async function register(
   registerData: Omit<RegisterFormFields, "confirmPassword">,
 ) {
-  try {
-    return await apiClient.post("/users", registerData);
-  } catch (error) {
-    throwErrorWithMessage(error, "Registration failed!");
-  }
+  return await apiClient.post("/users", registerData);
 }
 
 export async function verifyEmail(data: ValidateEmailFormFields) {
-  try {
-    return await apiClient.post("/auth/verify-email", data);
-  } catch (error) {
-    throwErrorWithMessage(error, "Veryfication retry failed!");
-  }
+  return await apiClient.post("/auth/verify-email", data);
 }

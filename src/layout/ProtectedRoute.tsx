@@ -1,19 +1,31 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useContext } from "react";
-import { Spinner } from "@/components/ui/spinner";
-import { AuthContext } from "@/lib/context/auth-context";
+import { useAccessToken } from "@/lib/hooks/auth";
+import { useAccountsCount } from "@/lib/hooks/accounts";
+import AddFirstAccount from "@/pages/auth/AddFirstAccount";
+import Loading from "./Loading";
 
 const ProtectedRoute = () => {
-  const auth = useContext(AuthContext);
-  if (auth?.isLoading) {
-    return (
-      <div className="w-full flex flex-col justify-center self-center">
-        <Spinner className="size-20 text-green-500 mx-auto" />
-      </div>
-    );
+  const {
+    data: token,
+    isLoading: tokenFetchLoading,
+    error: accessTokenError,
+  } = useAccessToken();
+  const {
+    data,
+    isLoading: accountsCountLoading,
+    error: accountsCountError,
+  } = useAccountsCount();
+
+  if (accountsCountLoading || tokenFetchLoading) {
+    return <Loading />;
   }
 
-  return auth?.isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!token || accountsCountError || accessTokenError)
+    return <Navigate to="/login" replace />;
+
+  if (data.response === 0) return <AddFirstAccount />;
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

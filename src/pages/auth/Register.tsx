@@ -20,8 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { registerSchema, type RegisterFormFields } from "@/schemas/auth";
-import { register } from "@/lib/api/auth";
 import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
+import { useCreateUser } from "@/lib/hooks/auth";
 
 const Register = () => {
   const form = useForm<RegisterFormFields>({
@@ -35,23 +35,23 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
+  const { mutate } = useCreateUser();
 
-  const onSubmit = async (data: RegisterFormFields) => {
-    try {
-      const registerData = {
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      };
-      const response = await register(registerData);
-      form.reset();
-      if (response?.status === 201) {
+  const onSubmit = (data: RegisterFormFields) => {
+    const registerData = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    };
+    mutate(registerData, {
+      onSuccess: () => {
+        form.reset();
         toast.success("User successfully created!");
         navigate("/login");
-      }
-    } catch (error) {
-      toastErrorWithMessage(error, "Login failed.");
-    }
+      },
+      onError: (error) =>
+        toastErrorWithMessage(error, "Unable to create user."),
+    });
   };
 
   return (

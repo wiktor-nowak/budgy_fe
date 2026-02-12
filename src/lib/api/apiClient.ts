@@ -31,6 +31,15 @@ apiClient.interceptors.response.use(
       tokenStore.clear();
       queryClient.removeQueries({ queryKey: ["auth"] });
     }
-    return Promise.reject(error);
+
+    // why it is done like that?
+
+    const normalizedError = {
+      status: error.response?.status,
+      message:
+        error.response?.data?.message ?? error.message ?? "Unexpected error",
+    };
+
+    return Promise.reject(normalizedError);
   },
 );

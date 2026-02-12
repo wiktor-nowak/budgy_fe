@@ -24,7 +24,7 @@ import {
 } from "@/schemas/auth";
 import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
 import { useEffect, useState } from "react";
-import { verifyEmail } from "@/lib/api/auth";
+import { useVerifyEmail } from "@/lib/hooks/auth";
 
 const Verified = () => {
   const form = useForm<ValidateEmailFormFields>({
@@ -36,14 +36,13 @@ const Verified = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const { mutate } = useVerifyEmail();
 
   const onSubmit = async (data: ValidateEmailFormFields) => {
-    try {
-      await verifyEmail(data);
-      navigate("/login");
-    } catch (error) {
-      toastErrorWithMessage(error, "Login failed.");
-    }
+    mutate(data, {
+      onSuccess: () => navigate("/login"),
+      onError: (error) => toastErrorWithMessage(error, "Login failed."),
+    });
   };
 
   useEffect(() => {
