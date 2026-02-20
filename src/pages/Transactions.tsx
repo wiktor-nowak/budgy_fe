@@ -76,9 +76,8 @@ const Transactions = () => {
           <TableRow className="border-b-2 border-gray-300">
             <TableHead className="p-2">Date</TableHead>
             <TableHead className="p-2">Category</TableHead>
-            <TableHead className="p-2 text-right pr-4">Amount</TableHead>
-            <TableHead className="p-2 text-center">Method</TableHead>
-            <TableHead className="p-2 text-center">Shared</TableHead>
+            <TableHead className="p-2 text-right pr-4">Value</TableHead>
+            <TableHead className="p-2 text-center">Account</TableHead>
             <TableHead className="p-2">Details</TableHead>
             <TableHead className="p-2"></TableHead>
           </TableRow>

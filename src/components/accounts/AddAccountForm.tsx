@@ -31,54 +31,25 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 interface AddAccountFormTypes {
-  isFirstAccount: boolean;
+  isFirstAccount?: boolean;
 }
 
-export const AddAccountForm = ({ isFirstAccount }: AddAccountFormTypes) => {
+export const AddAccountForm = ({
+  isFirstAccount = false,
+}: AddAccountFormTypes) => {
   const navigate = useNavigate();
   const form = useForm<CreateAccountFormType>({
     resolver: zodResolver(createAccountSchema),
     defaultValues: {
       name: "",
       type: ACCOUNT_TYPES.BANK,
-      balance: 0,
       description: "",
       setAsMain: isFirstAccount ? true : false,
     },
   });
   const { mutate } = useCreateAccount();
 
-  // useEffect(() => {
-  //   if (accountToEdit) {
-  //     form.setValue("name", accountToEdit.name);
-  //     form.setValue("type", accountToEdit.type);
-  //     form.setValue("balance", accountToEdit.balance);
-  //     form.setValue("description", accountToEdit.description);
-  //     form.setValue("setAsMain", false);
-  //   }
-  // }, [accountToEdit, form]);
-
   const onSubmit = async (data: CreateAccountFormType) => {
-    // try {
-    //   const token = localStorage.getItem("token");
-    //   if (accountToEdit) {
-    //     await updateAccount(accountToEdit.id, data);
-    //     setAccountToEdit(null);
-    //     toast.success("Account updated successfully!");
-    //   } else if (token) {
-    //     await addAccount(token, data, isFirstAccount);
-    //     toast.success("Account created successfully!");
-    //     if (isFirstAccount) {
-    //       navigate("/home");
-    //     }
-    //   }
-    //   form.reset();
-    // } catch (error) {
-    //   toast.error("Operation failed");
-    //   console.error(error);
-    // } finally {
-    //   refetchAccounts();
-    // }
     mutate(data, {
       onSuccess: () => {
         toast.success("Account created successfully!");
@@ -88,7 +59,6 @@ export const AddAccountForm = ({ isFirstAccount }: AddAccountFormTypes) => {
         toastErrorWithMessage(error, "Unable to create account.");
       },
     });
-    console.log(data);
   };
 
   return (
@@ -131,24 +101,6 @@ export const AddAccountForm = ({ isFirstAccount }: AddAccountFormTypes) => {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="balance"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Balance</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

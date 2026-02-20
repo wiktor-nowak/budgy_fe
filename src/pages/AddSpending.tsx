@@ -7,7 +7,7 @@ import { type Category } from "@/lib/api/categories";
 //   getMainAccount,
 //   type Account,
 // } from "@/lib/api/accounts";
-import { addExpense } from "@/lib/api/expenses";
+import { addExpense } from "@/lib/api/transactions";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

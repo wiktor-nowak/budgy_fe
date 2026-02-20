@@ -1,3 +1,5 @@
+// import { apiClient } from "./apiClient";
+
 const API_CATEGORIES = "http://localhost:3003/api/categories";
 
 export interface Category {
@@ -5,6 +7,10 @@ export interface Category {
   name: string;
   shortcut: string;
 }
+
+// export async function getAccountCategories(accId: string) {
+//   return await apiClient.get("/categories", accId);
+// }
 
 export const getCategories = async () => {
   const response = await fetch(API_CATEGORIES);
@@ -22,7 +28,7 @@ export const getCategories = async () => {
         name,
         shortcut,
       };
-    }
+    },
   );
 };
 
@@ -39,7 +45,7 @@ export const getCategory = async (id: number) => {
 
 export const updateCategory = async (
   id: number,
-  data: { name: string; shortcut: string }
+  data: { name: string; shortcut: string },
 ) => {
   const response = await fetch(`${API_CATEGORIES}/${id}`, {
     method: "PATCH",

@@ -1,11 +1,6 @@
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { type Category } from "@/lib/api/categories";
-import { type Account } from "@/lib/api/accounts";
-import { type ExpenseUpdateData } from "@/lib/api/expenses";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,56 +14,65 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  createTransactionSchema,
+  type CreateTransactionFormType,
+} from "@/schemas/transactions";
+import { useAccountsWithCategories } from "@/lib/hooks/accounts";
 
-const expenseSchema = z.object({
-  amount: z.coerce.number().positive("Amount must be positive"),
-  accountId: z.string().min(1, "Please select an account"),
-  categoryId: z.string().min(1, "Please select a category"),
-  description: z.string().optional(),
-});
+// interface TransactionFormTypes {
+//   expense?: ExpenseUpdateData;
+//   categories: Category[];
+//   onSave: (data: ExpenseFormFields) => void;
+//   onCancel: () => void;
+// }
 
-type ExpenseFormFields = z.infer<typeof expenseSchema>;
+// accountId: z.string(),
+// categoryId: z.string(),
+// amount: z.coerce
+//   .number("Please enter a number")
+//   .refine((n) => n !== 0, "Amount cannot be zero"),
+// description: z.string(),
+// transactionDate: z.date(),
 
-interface ExpenseFormProps {
-  expense?: ExpenseUpdateData;
-  accounts: Account[];
-  categories: Category[];
-  onSave: (data: ExpenseFormFields) => void;
-  onCancel: () => void;
-}
-
-const ExpenseForm = ({
-  expense,
-  accounts,
-  categories,
-  onSave,
-  onCancel,
-}: ExpenseFormProps) => {
-  const form = useForm<ExpenseFormFields>({
-    resolver: zodResolver(expenseSchema) as Resolver<ExpenseFormFields>,
+const TransactionForm = () => {
+  const form = useForm<CreateTransactionFormType>({
+    resolver: zodResolver(createTransactionSchema),
     defaultValues: {
-      amount: expense?.amount || 0,
-      accountId: expense?.accountId || "",
-      categoryId: expense?.categoryId || "",
-      description: expense?.description || "",
+      accountId: "",
+      categoryId: "",
+      amount: 0,
+      description: "",
+      transactionDate: new Date(),
     },
   });
+  const { data: accounts = [] } = useAccountsWithCategories();
 
-  useEffect(() => {
-    form.reset(expense);
-  }, [expense, form]);
+  // derived part
+  const selectedAccountId = form.watch("accountId");
+  const selectedAccount = accounts.find((acc) => acc.id === selectedAccountId);
+  const categories = selectedAccount?.categories ?? [];
+
+  // useEffect(() => {
+  //   form.reset(expense);
+  // }, [expense, form]);
+
+  const onSubmit = async () => {};
+  const onCancel = () => {};
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSave)} className="p-4 grid gap-3">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
         <div className="grid grid-cols-3 gap-3">
           <FormField
             control={form.control}
             name="accountId"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Account</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -80,7 +84,7 @@ const ExpenseForm = ({
                   </FormControl>
                   <SelectContent>
                     {accounts.map((account) => (
-                      <SelectItem key={account.id} value={String(account.id)}>
+                      <SelectItem key={account.id} value={account.id}>
                         {account.name}
                       </SelectItem>
                     ))}
@@ -121,12 +125,14 @@ const ExpenseForm = ({
             name="amount"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Amount</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     step="0.01"
-                    placeholder="Amount"
                     {...field}
+                    value={field.value as number}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -139,6 +145,7 @@ const ExpenseForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Input placeholder="Description" {...field} />
               </FormControl>
@@ -157,4 +164,4 @@ const ExpenseForm = ({
   );
 };
 
-export default ExpenseForm;
+export default TransactionForm;

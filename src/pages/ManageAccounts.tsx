@@ -10,16 +10,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { FilePenLine, Trash2 } from "lucide-react";
 import { useAccounts } from "@/lib/hooks/accounts";
-import type { CreateAccountFormType } from "@/schemas/accounts";
+import type { AccountType } from "@/schemas/accounts";
+import { useEffect } from "react";
+import AddAccountForm from "@/components/accounts/AddAccountForm";
 
 const ManageAccounts = () => {
   const { data: accounts, isLoading } = useAccounts();
   function handleEdit() {}
   function removeAccount() {}
 
+  useEffect(() => {
+    console.log(accounts);
+  }, [accounts]);
+
   return (
     <>
-      {/* <AddAccountForm /> */}
+      <AddAccountForm />
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Accounts</h2>
         {!isLoading ? (
@@ -29,19 +35,19 @@ const ManageAccounts = () => {
                 <TableHead className="w-[200px]">Name</TableHead>
                 <TableHead className="w-[100px]">Type</TableHead>
                 <TableHead className="w-[100px]">Balance</TableHead>
-                <TableHead>Description</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {!isLoading &&
                 accounts &&
-                accounts.map((account: CreateAccountFormType) => (
+                accounts.map((account: AccountType) => (
                   <TableRow key={account.name}>
                     <TableCell>{account.name}</TableCell>
                     <TableCell>{account.type}</TableCell>
-                    <TableCell>{account.balance as number}</TableCell>
-                    <TableCell>{account.description}</TableCell>
+                    <TableCell>
+                      {Number(account.balance).toFixed(2) + " PLN"}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-1">
                         <Button

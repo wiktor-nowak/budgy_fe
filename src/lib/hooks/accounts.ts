@@ -8,14 +8,38 @@ import {
   getAccount,
   updateAccount,
   deleteAccount,
-  type UpdateAccountData,
+  getAccountsWithCategories,
 } from "@/lib/api/accounts";
+import type { UpdateAccountData } from "@/schemas/accounts";
+
+export type Category = {
+  id: string;
+  name: string;
+};
+
+export type AccountWithCategories = {
+  id: string;
+  name: string;
+  categories: Category[];
+};
 
 export const useAccounts = () => {
   return useQuery({
     queryKey: ["accounts"],
     queryFn: async () => {
       const response = await getUserAccounts();
+      return response.data.response;
+    },
+  });
+};
+
+export const useAccountsWithCategories = () => {
+  return useQuery<AccountWithCategories[]>({
+    queryKey: ["accounts", "withCategories"],
+    queryFn: async () => {
+      const response = await getAccountsWithCategories();
+      console.log(response);
+      console.log(response.data.response);
       return response.data.response;
     },
   });

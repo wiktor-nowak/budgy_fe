@@ -1,4 +1,5 @@
 // If your tabs component is at src/components/ui/tabs.tsx, use:
+import TransactionForm from "@/components/forms/TransactionForm";
 import {
   Tabs,
   TabsContent,
@@ -19,6 +20,7 @@ const TestPage = () => {
         </TabsContent>
         <TabsContent value="password">Change your password here.</TabsContent>
       </Tabs>
+      <TransactionForm />
     </div>
   );
 };

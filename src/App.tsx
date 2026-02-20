@@ -5,7 +5,7 @@ import MonthlySpendings from "./pages/MonthlySpendings";
 import Transactions from "./pages/Transactions";
 import Charts from "./pages/Charts";
 import ManageAccounts from "./pages/ManageAccounts";
-import AddSpending from "./pages/AddSpending";
+// import AddSpending from "./pages/AddSpending";
 import TestPage from "./pages/TestPage";
 import Settings from "./pages/Settings";
 import Account from "./pages/Account";
@@ -31,7 +31,7 @@ function App() {
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/charts" element={<Charts />} />
               <Route path="/manage-accounts" element={<ManageAccounts />} />
-              <Route path="/add-spending" element={<AddSpending />} />
+              {/* <Route path="/add-spending" element={<AddSpending />} /> */}
               <Route path="/test" element={<TestPage />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/account/:id" element={<Account />} />
