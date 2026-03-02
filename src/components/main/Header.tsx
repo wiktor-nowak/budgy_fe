@@ -6,6 +6,9 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "../ui/input-group";
+import { Drawer, DrawerTrigger } from "../ui/drawer";
+import TransactionForm from "../forms/TransactionForm";
+
 // import { useAuth } from "@/lib/context/auth-context";
 // import { getAccountsCount } from "@/lib/api/accounts";
 
@@ -30,12 +33,16 @@ const Header = () => {
         </div>
       </div>
       <div className="flex items-center space-x-4 px-4 pl-8">
-        {/* <Link to="/add-spending"> */}
-        <Button variant="ghost" size="lg">
-          <FiPlus />
-          ADD NEW
-        </Button>
-        {/* </Link> */}
+        <Drawer direction="right">
+          <DrawerTrigger asChild>
+            <Button variant="ghost" size="lg">
+              <FiPlus />
+              ADD NEW
+            </Button>
+          </DrawerTrigger>
+          <TransactionForm />
+        </Drawer>
+        {/* <Link to="#"></Link> */}
       </div>
     </header>
   );

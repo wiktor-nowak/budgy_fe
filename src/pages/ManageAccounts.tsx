@@ -12,7 +12,7 @@ import { FilePenLine, Trash2 } from "lucide-react";
 import { useAccounts } from "@/lib/hooks/accounts";
 import type { AccountType } from "@/schemas/accounts";
 import { useEffect } from "react";
-import AddAccountForm from "@/components/accounts/AddAccountForm";
+import AddAccountForm from "@/components/forms/AddAccountForm";
 
 const ManageAccounts = () => {
   const { data: accounts, isLoading } = useAccounts();

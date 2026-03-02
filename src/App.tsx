@@ -31,7 +31,6 @@ function App() {
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/charts" element={<Charts />} />
               <Route path="/manage-accounts" element={<ManageAccounts />} />
-              {/* <Route path="/add-spending" element={<AddSpending />} /> */}
               <Route path="/test" element={<TestPage />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/account/:id" element={<Account />} />

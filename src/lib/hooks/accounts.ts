@@ -23,9 +23,12 @@ export type AccountWithCategories = {
   categories: Category[];
 };
 
+const ONE_ACCOUNT_QUERY_KEY = "account";
+const ACCOUNTS_QUERY_KEY = "accounts";
+
 export const useAccounts = () => {
   return useQuery({
-    queryKey: ["accounts"],
+    queryKey: [ACCOUNTS_QUERY_KEY],
     queryFn: async () => {
       const response = await getUserAccounts();
       return response.data.response;
@@ -35,11 +38,9 @@ export const useAccounts = () => {
 
 export const useAccountsWithCategories = () => {
   return useQuery<AccountWithCategories[]>({
-    queryKey: ["accounts", "withCategories"],
+    queryKey: [ACCOUNTS_QUERY_KEY, "withCategories"],
     queryFn: async () => {
       const response = await getAccountsWithCategories();
-      console.log(response);
-      console.log(response.data.response);
       return response.data.response;
     },
   });
@@ -47,17 +48,17 @@ export const useAccountsWithCategories = () => {
 
 export const useMainAccount = () => {
   return useQuery({
-    queryKey: ["account", "main"],
+    queryKey: [ONE_ACCOUNT_QUERY_KEY, "main"],
     queryFn: async () => {
       const response = await getMainAccount();
-      return response.data;
+      return response.data.response;
     },
   });
 };
 
 export const useAccountsCount = () => {
   return useQuery({
-    queryKey: ["accounts", "count"],
+    queryKey: [ACCOUNTS_QUERY_KEY, "count"],
     queryFn: async () => {
       const response = await getAccountsCount();
       return response.data;
@@ -67,7 +68,7 @@ export const useAccountsCount = () => {
 
 export const useAccount = (id: string | undefined) => {
   return useQuery({
-    queryKey: ["account", id],
+    queryKey: [ONE_ACCOUNT_QUERY_KEY, id],
     queryFn: async () => {
       const response = await getAccount(id as string);
       return response.data.response;
@@ -78,7 +79,7 @@ export const useAccount = (id: string | undefined) => {
 
 export const useAllAccounts = () => {
   return useQuery({
-    queryKey: ["accounts", "all"],
+    queryKey: [ACCOUNTS_QUERY_KEY, "all"],
     queryFn: async () => {
       const response = await getAllAccounts();
       return response.data;
@@ -92,7 +93,10 @@ export const useCreateAccount = () => {
   return useMutation({
     mutationFn: createAccount,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({
+        queryKey: [ACCOUNTS_QUERY_KEY],
+        exact: false,
+      });
     },
   });
 };
@@ -109,10 +113,10 @@ export const useUpdateAccount = () => {
     }) => updateAccount(data, accountId),
     onSuccess: (_, input) => {
       queryClient.invalidateQueries({
-        queryKey: ["account", input.accountId],
+        queryKey: [ONE_ACCOUNT_QUERY_KEY, input.accountId],
       });
       queryClient.invalidateQueries({
-        queryKey: ["accounts"],
+        queryKey: [ACCOUNTS_QUERY_KEY],
       });
     },
   });
@@ -124,10 +128,10 @@ export const useDeleteAccount = () => {
     mutationFn: (id: string) => deleteAccount(id),
     onSuccess: (_, id) => {
       queryClient.removeQueries({
-        queryKey: ["account", id],
+        queryKey: [ONE_ACCOUNT_QUERY_KEY, id],
       });
       queryClient.invalidateQueries({
-        queryKey: ["accounts"],
+        queryKey: [ACCOUNTS_QUERY_KEY],
       });
     },
   });

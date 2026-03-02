@@ -1,4 +1,4 @@
-import AddAccountForm from "@/components/accounts/AddAccountForm";
+import AddAccountForm from "@/components/forms/AddAccountForm";
 import {
   Card,
   CardContent,

@@ -1,70 +1,17 @@
-// import { Fragment, useEffect, useState } from "react";
-// import {
-//   getExpenses,
-//   updateExpense,
-//   type ExpenseData,
-//   type ExpenseUpdateData,
-// } from "@/lib/api/expenses";
-// import { getCategories, type Category } from "@/lib/api/categories";
-// import { toast } from "sonner";
 import {
   Table,
-  // TableBody,
-  // TableCell,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import {
-//   FiCreditCard,
-//   FiDollarSign,
-//   FiCheck,
-//   FiX,
-//   FiEdit,
-// } from "react-icons/fi";
-// import ExpenseForm from "@/components/forms/ExpenseForm";
+import { useTransactions, type Transaction } from "@/lib/hooks/transactions";
+import { FiEdit } from "react-icons/fi";
 
 const Transactions = () => {
-  // const [transactions, setTransactions] = useState<ExpenseData[]>([]);
-  // // const [accounts, setAccounts] = useState<Account[]>([]);
-  // const [categories, setCategories] = useState<Category[]>([]);
   // const [openRowId, setOpenRowId] = useState<string | null>(null);
-
-  // const fetchData = async () => {
-  //   try {
-  //     const [expenseData, categoriesData] = await Promise.all([
-  //       getExpenses(),
-  //       getCategories(),
-  //     ]);
-  //     setTransactions(expenseData);
-  //     // setAccounts(accountsData);
-  //     setCategories(categoriesData);
-  //   } catch (err) {
-  //     toast.error("Failed to fetch transaction data.");
-  //     console.error(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // const handleToggleEdit = (id: string) => {
-  //   setOpenRowId(openRowId === id ? null : id);
-  // };
-
-  // const handleUpdateExpense = async (data: ExpenseUpdateData) => {
-  //   if (!openRowId) return;
-  //   try {
-  //     await updateExpense(openRowId, data);
-  //     setOpenRowId(null);
-  //     toast.success("Expense updated successfully!");
-  //     fetchData(); // Refresh data after update
-  //   } catch (error) {
-  //     console.error("Failed to update expense", error);
-  //     toast.error("Failed to update expense.");
-  //   }
-  // };
+  const { data: transactions, isLoading, isError } = useTransactions();
 
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg">
@@ -82,69 +29,43 @@ const Transactions = () => {
             <TableHead className="p-2"></TableHead>
           </TableRow>
         </TableHeader>
-        {/* <TableBody>
-          {transactions.map((transaction) => (
-            <Fragment key={transaction.id}>
+        {!isError && !isLoading && (
+          <TableBody>
+            {transactions.map((transaction: Transaction) => (
+              // <Fragment key={transaction.id}>
               <TableRow
-                className={`border-b border-bg dark:border-dark-bg ${
-                  openRowId === transaction.id
-                    ? "text-gray-400 dark:text-gray-500"
-                    : ""
-                }`}
+                className={`border-b border-bg dark:border-dark-bg`}
+                key={transaction.id}
               >
                 <TableCell className="p-2">
-                  {new Date(transaction.createdAt).toLocaleDateString("en-GB")}
-                </TableCell>
-                <TableCell className="p-2">
-                  {transaction.category.name}
-                </TableCell>
-                <TableCell className="p-2 text-right pr-4 text-warning">
-                  -{Math.abs(transaction.amount).toFixed(2)} PLN
-                </TableCell>
-                <TableCell className="p-2 text-center">
-                  {transaction.account.type === "CASH" ? (
-                    <FiDollarSign className="mx-auto" />
-                  ) : (
-                    <FiCreditCard className="mx-auto" />
+                  {new Date(transaction.transactionDate).toLocaleDateString(
+                    "en-GB",
                   )}
                 </TableCell>
+                <TableCell className="p-2">{transaction.category}</TableCell>
+                <TableCell className="p-2 text-right pr-4">
+                  {transaction.amount} PLN
+                </TableCell>
                 <TableCell className="p-2 text-center">
-                  {transaction.shared ? (
-                    <FiCheck className="mx-auto" />
-                  ) : (
-                    <FiX className="mx-auto" />
-                  )}
+                  {transaction.accountName}
                 </TableCell>
                 <TableCell className="p-2">
-                  {transaction.description?.substring(0, 50) || ""}
+                  {transaction.description?.substring(0, 24) || ""}
                   {transaction.description &&
-                    transaction.description.length > 50 &&
+                    transaction.description.length > 24 &&
                     "..."}
                 </TableCell>
                 <TableCell className="p-2 text-right">
                   <FiEdit
-                    className="cursor-pointer"
-                    onClick={() => handleToggleEdit(transaction.id)}
+                    className="cursor-not-allowed stroke-gray-600"
+                    onClick={() => {}}
+                    // onClick={() => handleToggleEdit(transaction.id)}
                   />
                 </TableCell>
               </TableRow>
-              {openRowId === transaction.id && (
-                <TableRow>
-                  <TableCell colSpan={7} className="p-0">
-                    <div>
-                      <ExpenseForm
-                        expense={transaction}
-                        categories={categories}
-                        onSave={handleUpdateExpense}
-                        onCancel={() => setOpenRowId(null)}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </Fragment>
-          ))}
-        </TableBody> */}
+            ))}
+          </TableBody>
+        )}
       </Table>
     </div>
   );

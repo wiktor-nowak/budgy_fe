@@ -1,44 +1,82 @@
-import { RadialBarChart, RadialBar, Legend, Tooltip } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+// import { useTransactions } from "@/lib/hooks/transactions";
+import { Bar, XAxis, YAxis, BarChart } from "recharts";
 
-const data = [
-  { name: "Shopping", uv: 31.47, pv: 2400, fill: "#00f59a" },
-  { name: "Entertainment", uv: 26.69, pv: 4567, fill: "#83a6ed" },
-  { name: "Food", uv: 15.69, pv: 1398, fill: "#8dd1e1" },
-  { name: "Miscellaneous", uv: 8.22, pv: 9800, fill: "#82ca9d" },
+const chartConfig = {
+  desktop: {
+    label: "Balance",
+    color: "var(--chart-1)",
+  },
+} satisfies ChartConfig;
+
+const chartData = [
+  { month: "January", desktop: 186 },
+  { month: "February", desktop: 305 },
+  { month: "March", desktop: 237 },
+  { month: "April", desktop: 73 },
+  { month: "May", desktop: 209 },
+  { month: "June", desktop: 214 },
 ];
 
 const Charts = () => {
+  // const { data: transactions, isLoading, isError } = useTransactions();
+
   return (
     <div className="bg-bg-light dark:bg-dark-card p-4 rounded-lg">
-      <h2 className="text-text-primary dark:text-dark-text-primary text-lg font-semibold">
-        My Expenses
-      </h2>
-      <div className="flex justify-center">
-        <RadialBarChart
-          width={500}
-          height={300}
-          cx={150}
-          cy={150}
-          innerRadius={20}
-          outerRadius={140}
-          barSize={10}
-          data={data}
-        >
-          <RadialBar background dataKey="uv" />
-          <Legend
-            iconSize={10}
-            width={120}
-            height={140}
-            layout="vertical"
-            verticalAlign="middle"
-            align="right"
-          />
-          <Tooltip
-            contentStyle={{ backgroundColor: "#f5f5f5", border: "none" }}
-            itemStyle={{ color: "#1a1a1a" }}
-          />
-        </RadialBarChart>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Transactions summary</CardTitle>
+          <CardDescription>Total cash flow per category</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <BarChart
+              accessibilityLayer={true}
+              data={chartData}
+              layout="vertical"
+              margin={{
+                left: -20,
+              }}
+            >
+              <XAxis type="number" dataKey="desktop" hide />
+              <YAxis
+                dataKey="month"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={5} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+        <CardFooter className="flex-col items-start gap-2 text-sm">
+          <div className="flex gap-2 leading-none font-medium">
+            Shows data based on summaries of each month and its balance.
+          </div>
+          <div className="leading-none text-muted-foreground">
+            Visit monthly spending page to see more details.
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
