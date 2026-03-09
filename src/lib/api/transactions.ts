@@ -1,7 +1,7 @@
 // import type { ACCOUNT_TYPES } from "../types";
 
 import type { CreateTransactionFormType } from "@/schemas/transactions";
-import { apiClient } from "./apiClient";
+import { apiClient } from "../services/api";
 
 export async function getUserTransactions() {
   return await apiClient.get("/transactions");

@@ -2,7 +2,7 @@ import type {
   CreateAccountFormType,
   UpdateAccountData,
 } from "@/schemas/accounts";
-import { apiClient } from "./apiClient";
+import { apiClient } from "../services/api";
 
 // type CreateAccountData = CreateAccountFormFields & { userId: string }; // If that would be possible to create accounts as an ADMIN - currently it is not.
 

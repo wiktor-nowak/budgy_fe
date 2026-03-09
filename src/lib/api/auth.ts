@@ -3,26 +3,26 @@ import type {
   RegisterFormFields,
   ValidateEmailFormFields,
 } from "@/schemas/auth";
-import { apiClient } from "./apiClient";
+import { authClient } from "../services/api";
 
 export async function refresh() {
-  return await apiClient.post("/auth/refresh"); //CZY TO POWINNO BYĆ withCredentials?! NIE BO MAM W AXIOS CLIENT
+  return await authClient.post("/auth/refresh");
 }
 
 export async function login(loginData: LoginFormFields) {
-  return await apiClient.post("/auth/login", loginData);
+  return await authClient.post("/auth/login", loginData);
 }
 
 export async function logout() {
-  return await apiClient.post("/auth/logout");
+  return await authClient.post("/auth/logout");
 }
 
 export async function register(
   registerData: Omit<RegisterFormFields, "confirmPassword">,
 ) {
-  return await apiClient.post("/users", registerData);
+  return await authClient.post("/users", registerData);
 }
 
 export async function verifyEmail(data: ValidateEmailFormFields) {
-  return await apiClient.post("/auth/verify-email", data);
+  return await authClient.post("/auth/verify-email", data);
 }

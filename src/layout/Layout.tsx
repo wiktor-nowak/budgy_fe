@@ -2,14 +2,14 @@ import SideBar from "../components/main/SideBar";
 import Header from "../components/main/Header";
 import Footer from "../components/main/Footer";
 import { Outlet } from "react-router-dom";
-import { SidebarInset } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 const Layout = () => {
   console.log("xd");
 
   return (
-    <>
+    <SidebarProvider>
       <SideBar />
       <SidebarInset className="rounded-xl overflow-hidden">
         <Header />
@@ -19,7 +19,7 @@ const Layout = () => {
         <Footer />
       </SidebarInset>
       <Toaster />
-    </>
+    </SidebarProvider>
   );
 };
 

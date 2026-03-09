@@ -30,8 +30,8 @@ const Login = () => {
       password: "",
     },
   });
-  const { mutate } = useLogin();
   const navigate = useNavigate();
+  const { mutate } = useLogin();
 
   const onSubmit = async (data: LoginFormFields) => {
     mutate(data, {

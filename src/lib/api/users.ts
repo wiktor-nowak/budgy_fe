@@ -1,4 +1,4 @@
-import { apiClient } from "./apiClient";
+import { apiClient } from "../services/api";
 
 const API_AUTH = "http://localhost:3003/auth";
 const API_USERS = "http://localhost:3003/users";

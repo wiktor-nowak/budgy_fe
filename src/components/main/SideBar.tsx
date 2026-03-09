@@ -83,7 +83,7 @@ const SideBar = () => {
         <SidebarMenu>
           <SidebarMenuItem className="mr-2">
             <SidebarMenuButton className="cursor-pointer py-6" asChild>
-              <Link to="/home">
+              <Link to="/">
                 <h1 className="text-3xl font-bold text-lemongreen">Budgy</h1>
               </Link>
             </SidebarMenuButton>

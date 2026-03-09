@@ -11,3 +11,5 @@ export const tokenStore = {
     accessToken = null;
   },
 };
+
+export type TokenStoreType = typeof tokenStore;

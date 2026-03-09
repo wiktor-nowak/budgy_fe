@@ -1,29 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAccessToken } from "@/lib/hooks/auth";
-import { useAccountsCount } from "@/lib/hooks/accounts";
-import AddFirstAccount from "@/pages/auth/AddFirstAccount";
-import Loading from "./Loading";
+// import Loading from "./Loading";
+import { useContext } from "react";
+import { AuthContext } from "@/lib/context/authContext";
 
 const ProtectedRoute = () => {
-  const {
-    data: token,
-    isLoading: tokenFetchLoading,
-    error: accessTokenError,
-  } = useAccessToken();
-  const {
-    data,
-    isLoading: accountsCountLoading,
-    error: accountsCountError,
-  } = useAccountsCount();
+  const tokenStore = useContext(AuthContext);
+  const token = tokenStore?.get();
 
-  if (accountsCountLoading || tokenFetchLoading) {
-    return <Loading />;
-  }
-
-  if (!token || accountsCountError || accessTokenError)
-    return <Navigate to="/login" replace />;
-
-  if (data.response === 0) return <AddFirstAccount />;
+  if (!token) return <Navigate to="/login" replace />;
 
   return <Outlet />;
 };
