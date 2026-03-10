@@ -6,8 +6,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 const Layout = () => {
-  console.log("xd");
-
   return (
     <SidebarProvider>
       <SideBar />

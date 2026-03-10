@@ -10,11 +10,8 @@ export default function AuthBootstrap({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    console.log("HI!");
     async function restore() {
-      console.log("wdawdd");
-      const x = await tryRestoreSession();
-      console.log(x);
+      await tryRestoreSession();
       setReady(true);
     }
 

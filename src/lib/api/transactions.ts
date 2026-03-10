@@ -13,61 +13,20 @@ export async function createTransaction(
   return await apiClient.post("/transactions", createTransactionData);
 }
 
-// export const getExpenses = async (): Promise<ExpenseData[]> => {
-//   const token = localStorage.getItem("token");
-//   const response = await fetch(API_EXPENSES, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
+export async function getTransaction(txId: string) {
+  return await apiClient.get(`/transactions/${txId}`);
+}
 
-//   if (!response.ok) {
-//     throw new Error("Could not fetch expenses!");
-//   }
+export async function deleteTransaction(txId: string) {
+  return await apiClient.delete(`/transactions/${txId}`);
+}
 
-//   const data = await response.json();
-//   return data.response;
-// };
-
-// export const addExpense = async (
-//   expenseData: Omit<ExpenseUpdateData, "id">,
-// ) => {
-//   const token = localStorage.getItem("token");
-//   const response = await fetch(API_EXPENSES, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify(expenseData),
-//   });
-
-//   if (!response.ok) {
-//     const errorData = await response.json();
-//     throw new Error(errorData.error || "Failed to add expense");
-//   }
-
-//   const data = await response.json();
-//   return data.response;
-// };
-
-// export const updateExpense = async (
-//   id: string,
-//   expenseData: ExpenseUpdateData,
-// ) => {
-//   const token = localStorage.getItem("token");
-//   const response = await fetch(`${API_EXPENSES}/${id}`, {
-//     method: "PATCH",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify(expenseData),
-//   });
-
-//   const data = await response.json();
-//   return data.response;
-// };
+export const updateTransaction = async (
+  updateData: CreateTransactionFormType,
+  txId: string,
+) => {
+  return await apiClient.put(`/transactions/${txId}`, updateData);
+};
 
 // export const deleteExpense = async (id: string) => {
 //   const token = localStorage.getItem("token");

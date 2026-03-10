@@ -245,6 +245,7 @@ const TransactionForm = () => {
                           mode="single"
                           selected={field.value}
                           defaultMonth={field.value}
+                          disabled={{ after: new Date() }}
                           onSelect={(date) => {
                             if (!date) return;
                             field.onChange(date);

@@ -11,17 +11,12 @@ import { Button } from "@/components/ui/button";
 import { FilePenLine, Trash2 } from "lucide-react";
 import { useAccounts } from "@/lib/hooks/accounts";
 import type { AccountType } from "@/schemas/accounts";
-import { useEffect } from "react";
 import AddAccountForm from "@/components/forms/AddAccountForm";
 
 const ManageAccounts = () => {
   const { data: accounts, isLoading } = useAccounts();
   function handleEdit() {}
   function removeAccount() {}
-
-  useEffect(() => {
-    console.log(accounts);
-  }, [accounts]);
 
   return (
     <>

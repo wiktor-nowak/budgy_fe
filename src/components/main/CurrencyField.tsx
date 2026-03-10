@@ -21,7 +21,7 @@ import {
 type CurrencyFieldProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
-  label: string;
+  label?: string;
   min?: number;
   disabled?: boolean;
   placeholder?: string;
@@ -93,7 +93,7 @@ export function CurrencyField<TFieldValues extends FieldValues>({
 
   return (
     <FormItem className={className}>
-      <FormLabel>{label}</FormLabel>
+      {label && <FormLabel>{label}</FormLabel>}
 
       <FormControl>
         <InputGroup>
