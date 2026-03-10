@@ -1,8 +1,10 @@
 const Footer = () => {
   return (
-    <footer className="bg-white shadow-sm p-4 dark:bg-gray-800 mt-auto">
+    <footer className="bg-bg-light shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 mt-auto">
       <div className="text-center">
-        <p className="text-sm text-gray-600 dark:text-gray-400">This is a footer</p>
+        <p className="text-sm text-dark">
+          This is a footer
+        </p>
       </div>
     </footer>
   );
