@@ -19,6 +19,7 @@ import {
 import {
   createTransactionSchema,
   type CreateTransactionFormType,
+  type CreateTransactionRequestType,
 } from "@/schemas/transactions";
 import { useAccountsWithCategories } from "@/lib/hooks/accounts";
 import { Textarea } from "../ui/textarea";
@@ -34,6 +35,7 @@ import {
 } from "@/lib/hooks/transactions";
 import { toast } from "sonner";
 import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
+import { formatDateOnly } from "@/lib/utils";
 
 const TRANSACTION_TYPES = {
   income: "income",
@@ -99,15 +101,18 @@ const EditTransactionForm = ({ txId }: EditTransactionTypes) => {
   }, [transaction, form, accounts, categories]);
 
   const onSubmit = async (data: CreateTransactionFormType) => {
+    const requestData: CreateTransactionRequestType = {
+      ...data,
+      amount:
+        transactionType === "expense"
+          ? -Number(data.amount)
+          : Number(data.amount),
+      transactionDate: formatDateOnly(data.transactionDate),
+    };
+
     mutate(
       {
-        data: {
-          ...data,
-          amount:
-            transactionType === "expense"
-              ? -Number(data.amount)
-              : Number(data.amount),
-        },
+        data: requestData,
         txId,
       },
       {

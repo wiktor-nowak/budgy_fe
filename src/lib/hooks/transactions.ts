@@ -6,7 +6,7 @@ import {
   getUserTransactions,
   updateTransaction,
 } from "../api/transactions";
-import type { CreateTransactionFormType } from "@/schemas/transactions";
+import type { CreateTransactionRequestType } from "@/schemas/transactions";
 
 export type Transaction = {
   accountId: string;
@@ -57,7 +57,7 @@ export const useCreateTransaction = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createTransaction,
+    mutationFn: (data: CreateTransactionRequestType) => createTransaction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
@@ -89,7 +89,7 @@ export const useUpdateTransaction = () => {
       data,
       txId,
     }: {
-      data: CreateTransactionFormType;
+      data: CreateTransactionRequestType;
       txId: string;
     }) => updateTransaction(data, txId),
     onSuccess: () => {

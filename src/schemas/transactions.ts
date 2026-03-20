@@ -15,4 +15,10 @@ export const createTransactionSchema = z.object({
 });
 
 export type CreateTransactionFormType = z.input<typeof createTransactionSchema>;
-export type UpdateTransactionType = CreateTransactionFormType & { id: string };
+export type CreateTransactionRequestType = Omit<
+  CreateTransactionFormType,
+  "transactionDate"
+> & {
+  transactionDate: string;
+};
+export type UpdateTransactionType = CreateTransactionRequestType & { id: string };

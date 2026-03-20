@@ -20,6 +20,7 @@ import {
 import {
   createTransactionSchema,
   type CreateTransactionFormType,
+  type CreateTransactionRequestType,
 } from "@/schemas/transactions";
 import {
   useAccountsWithCategories,
@@ -42,6 +43,7 @@ import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useCreateTransaction } from "@/lib/hooks/transactions";
 import { toast } from "sonner";
 import { toastErrorWithMessage } from "@/lib/errors/uiErrors";
+import { formatDateOnly } from "@/lib/utils";
 
 // interface TransactionFormTypes {
 //   expense?: ExpenseUpdateData;
@@ -102,14 +104,17 @@ const TransactionForm = () => {
   }, [mainAccount]);
 
   const onSubmit = async (data: CreateTransactionFormType) => {
+    const requestData: CreateTransactionRequestType = {
+      ...data,
+      amount:
+        transactionType === "expense"
+          ? -Number(data.amount)
+          : Number(data.amount),
+      transactionDate: formatDateOnly(data.transactionDate),
+    };
+
     mutate(
-      {
-        ...data,
-        amount:
-          transactionType === "expense"
-            ? -Number(data.amount)
-            : Number(data.amount),
-      },
+      requestData,
       {
         onSuccess: () => {
           toast.success("Transaction created successfully!", {

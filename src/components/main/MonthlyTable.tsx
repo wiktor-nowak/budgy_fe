@@ -6,53 +6,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-interface SummaryItem {
-  categoryName: string;
-  totalSpent: number;
-}
+import type { SummaryCategory } from "@/lib/types/summary";
 
 interface MonthlyTableProps {
-  categories: SummaryItem[];
+  categories: SummaryCategory[];
 }
 
-const PLANNED_BUDGET = 1000;
-
 const MonthlyTable = ({ categories }: MonthlyTableProps) => {
+  const spendingCategories = categories.filter((category) => category.totalSpent > 0);
+  const totalSpent = spendingCategories.reduce(
+    (sum, category) => sum + category.totalSpent,
+    0,
+  );
+
   return (
-    <Table className="text-sm text-left text-text-secondary dark:text-dark-text-secondary">
+    <Table>
       <TableHeader>
-        <TableRow className="border-b-2 border-gray-300">
+        <TableRow>
           <TableHead className="p-2 font-bold">Category</TableHead>
-          <TableHead className="p-2 text-right">Planned</TableHead>
           <TableHead className="p-2 text-right">Spent</TableHead>
-          <TableHead className="p-2 text-right">Percent (%)</TableHead>
+          <TableHead className="p-2 text-right">Share</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {categories.map((category, index) => {
-          const spent = Number(category.totalSpent);
-          const percent = (spent * 100) / PLANNED_BUDGET;
+        {spendingCategories.map((category) => {
+          const share = totalSpent > 0 ? (category.totalSpent / totalSpent) * 100 : 0;
           return (
-            <TableRow
-              key={index}
-              className="border-b border-bg dark:border-dark-bg"
-            >
+            <TableRow key={category.categoryId}>
               <TableCell className="p-2 font-bold">
                 {category.categoryName}
               </TableCell>
               <TableCell className="p-2 text-right">
-                {PLANNED_BUDGET.toFixed(2)} PLN
+                {category.totalSpent.toFixed(2)} PLN
               </TableCell>
-              <TableCell className={`p-2 text-right text-dark`}>
-                {spent.toFixed(2)} PLN
-              </TableCell>
-              <TableCell
-                className={`p-2 text-right ${
-                  percent > 100 ? "text-warning" : ""
-                }`}
-              >
-                {percent.toFixed(2)} %
+              <TableCell className="p-2 text-right">
+                {share.toFixed(1)}%
               </TableCell>
             </TableRow>
           );

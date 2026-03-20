@@ -1,6 +1,4 @@
-// import type { ACCOUNT_TYPES } from "../types";
-
-import type { CreateTransactionFormType } from "@/schemas/transactions";
+import type { CreateTransactionRequestType } from "@/schemas/transactions";
 import { apiClient } from "../services/api";
 
 export async function getUserTransactions() {
@@ -8,7 +6,7 @@ export async function getUserTransactions() {
 }
 
 export async function createTransaction(
-  createTransactionData: CreateTransactionFormType,
+  createTransactionData: CreateTransactionRequestType,
 ) {
   return await apiClient.post("/transactions", createTransactionData);
 }
@@ -22,7 +20,7 @@ export async function deleteTransaction(txId: string) {
 }
 
 export const updateTransaction = async (
-  updateData: CreateTransactionFormType,
+  updateData: CreateTransactionRequestType,
   txId: string,
 ) => {
   return await apiClient.put(`/transactions/${txId}`, updateData);
