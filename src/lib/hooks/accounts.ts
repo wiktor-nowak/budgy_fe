@@ -94,6 +94,9 @@ export const useCreateAccount = () => {
     mutationFn: createAccount,
     onSuccess: () => {
       queryClient.invalidateQueries({
+        queryKey: ["auth", "access-status"],
+      });
+      queryClient.invalidateQueries({
         queryKey: [ACCOUNTS_QUERY_KEY],
         exact: false,
       });

@@ -1,6 +1,7 @@
 import { login, logout, register, verifyEmail } from "@/lib/api/auth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { tokenStore } from "../api/tokenStore";
+import { getAccessStatus, type AccessStatus } from "../api/users";
 
 export const useVerifyEmail = () => {
   return useMutation({
@@ -54,5 +55,17 @@ export function useLogout() {
       tokenStore.clear();
       queryClient.clear();
     },
+  });
+}
+
+export function useAccessStatus(enabled = true) {
+  return useQuery<AccessStatus>({
+    queryKey: ["auth", "access-status"],
+    queryFn: async () => {
+      const response = await getAccessStatus();
+      return response.data.response;
+    },
+    enabled,
+    retry: false,
   });
 }

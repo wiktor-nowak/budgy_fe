@@ -10,8 +10,16 @@ export interface User {
   surname?: string;
 }
 
+export type AccessStatus = {
+  hasMainAccount: boolean;
+};
+
 export async function getAllUsers() {
   return await apiClient.get("/accounts/all");
+}
+
+export async function getAccessStatus() {
+  return await apiClient.get("/users/access-status");
 }
 
 export async function getMe(): Promise<User> {

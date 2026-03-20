@@ -48,12 +48,15 @@ export const AddAccountForm = ({
     },
   });
   const { mutate } = useCreateAccount();
+  const availableAccountTypes = isFirstAccount
+    ? [ACCOUNT_TYPES.BANK, ACCOUNT_TYPES.CASH]
+    : Object.values(ACCOUNT_TYPES);
 
   const onSubmit = async (data: CreateAccountFormType) => {
     mutate(data, {
       onSuccess: () => {
         toast.success("Account created successfully!");
-        navigate("/login");
+        navigate(isFirstAccount ? "/" : "/login");
       },
       onError: (error) => {
         toastErrorWithMessage(error, "Unable to create account.");
@@ -94,7 +97,7 @@ export const AddAccountForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.values(ACCOUNT_TYPES).map((type) => (
+                  {availableAccountTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
                     </SelectItem>
